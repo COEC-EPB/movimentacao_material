@@ -630,4 +630,136 @@ async function salvarMovimentacao(){
         data:
         document.getElementById("dataMov").value,
 
-       
+               observacao:
+        document.getElementById("observacao").value
+
+    };
+
+    if(!tipoSelecionado){
+
+        alert(
+            "Selecione o tipo da movimentação."
+        );
+
+        return;
+
+    }
+
+    if(!dados.colaborador){
+
+        alert(
+            "Informe o colaborador."
+        );
+
+        return;
+
+    }
+
+    if(!dados.equipamento){
+
+        alert(
+            "Informe o equipamento."
+        );
+
+        return;
+
+    }
+
+    try{
+
+        /*
+        QUANDO CRIAR O ENDPOINT:
+
+        POST /movimentacoes
+
+        DESCOMENTE:
+
+        const resp =
+        await authFetch(
+            `${API}/movimentacoes`,
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":
+                    "application/json"
+                },
+                body:JSON.stringify(dados)
+            }
+        );
+
+        if(!resp.ok){
+            throw new Error(
+                "Erro ao salvar"
+            );
+        }
+        */
+
+        alert(
+            "✅ Movimentação registrada com sucesso."
+        );
+
+        limparFormulario();
+
+    }
+
+    catch(e){
+
+        console.error(e);
+
+        alert(
+            "❌ Erro ao salvar movimentação."
+        );
+
+    }
+
+}
+
+function limparFormulario(){
+
+    document.getElementById(
+        "colaborador"
+    ).value = "";
+
+    document.getElementById(
+        "matricula"
+    ).value = "";
+
+    document.getElementById(
+        "equipamento"
+    ).value = "";
+
+    document.getElementById(
+        "quantidade"
+    ).value = 1;
+
+    document.getElementById(
+        "tipoMov"
+    ).selectedIndex = 0;
+
+    document.getElementById(
+        "dataMov"
+    ).valueAsDate =
+    new Date();
+
+    document.getElementById(
+        "observacao"
+    ).value = "";
+
+}
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        document.getElementById(
+            "dataMov"
+        ).valueAsDate =
+        new Date();
+
+    }
+);
+
+</script>
+
+</body>
+</html>
