@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Movimentações</title>
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+<style>
+
+:root{
+    --azul:#0097CE;
+    --azulEscuro:#0077B6;
+    --laranja:#F36F21;
+    --cinza:#F5F7FA;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:var(--cinza);
+}
+
+.container{
+
+    max-width:1200px;
+
+    margin:auto;
+
+    padding:30px;
+
+}
+
+.titulo{
+
+    margin-bottom:25px;
+
+}
+
+.titulo h1{
+
+    color:#222;
+
+}
+
+.card{
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:25px;
+
+    box-shadow:
+    0 6px 20px rgba(0,0,0,.08);
+
+}
+
+.opcoes{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+    margin-top:20px;
+
+}
+
+.opcao{
+
+    border:2px solid #ddd;
+
+    border-radius:16px;
+
+    padding:25px;
+
+    text-align:center;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.opcao:hover{
+
+    border-color:#0097CE;
+
+    transform:translateY(-4px);
+
+}
+
+.opcao.ativa{
+
+    border-color:#0097CE;
+
+    background:#f1fbff;
+
+}
+
+.opcao i{
+
+    font-size:42px;
+
+    color:#0097CE;
+
+}
+
+.opcao h3{
+
+    margin-top:12px;
+
+}
+
+.formulario{
+
+    display:none;
+
+    margin-top:25px;
+
+}
+
+.form-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(2,1fr);
+
+    gap:15px;
+
+}
+
+.campo{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.campo label{
+
+    font-weight:600;
+
+    margin-bottom:5px;
+
+}
+
+.campo input,
+.campo select,
+.campo textarea{
+
+    border:1px solid #ddd;
+
+    border-radius:10px;
+
+    padding:12px;
+
+}
+
+.campo-full{
+
+    grid-column:1/-1;
+
+}
+
+textarea{
+
+    resize:none;
+
+    height:100px;
+
+}
+
+.botoes{
+
+    margin-top:20px;
+
+    display:flex;
+
+    gap:15px;
+
+}
+
+.btn{
+
+    border:none;
+
+    padding:14px 24px;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+}
+
+.btn-salvar{
+
+    background:var(--azul);
+
+    color:white;
+
+}
+
+.btn-voltar{
+
+    background:#ddd;
+
+}
+
+.historico{
+
+    margin-top:30px;
+
+}
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    margin-top:15px;
+
+}
+
+table th{
+
+    background:#0097CE;
+
+    color:white;
+
+    padding:12px;
+
+    text-align:left;
+
+}
+
+table td{
+
+    padding:12px;
+
+    border-bottom:1px solid #eee;
+
+}
+
+.badge{
+
+    background:#28a745;
+
+    color:white;
+
+    padding:5px 10px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="titulo">
+
+        <h1>
+            🔄 Movimentações
+        </h1>
+
+        <p>
+            Selecione o tipo de movimentação.
+        </p>
+
+    </div>
+
+    <div class="card">
+
+        <div class="opcoes">
+
+            <div
+            class="opcao"
+            onclick="selecionarTipo(this,'EPI')">
+
+                <i class="bi bi-shield-check"></i>
+
+                <h3>EPI</h3>
+
+            </div>
+
+            <div
+            class="opcao"
+            onclick="selecionarTipo(this,'EPC')">
+
+                <i class="bi bi-cone-striped"></i>
+
+                <h3>EPC</h3>
+
+            </div>
+
+            <div
+            class="opcao"
+            onclick="selecionarTipo(this,'FERRAMENTAL')">
+
+                <i class="bi bi-tools"></i>
+
+                <h3>Ferramental</h3>
+
+            </div>
+
+            <div
+            class="opcao"
+            onclick="selecionarTipo(this,'ESTOQUE')">
+
+                <i class="bi bi-box-seam"></i>
+
+                <h3>Estoque</h3>
+
+            </div>
+
+            <div
+            class="opcao"
+            onclick="abrirConsulta()">
+
+                <i class="bi bi-search"></i>
+
+                <h3>Verificar Movimentações</h3>
+
+            </div>
+
+        </div>
+
+        <div
+        class="formulario"
+        id="formularioMov">
+
+            <h2
+            id="tituloMovimentacao">
+
+                Nova Movimentação
+
+            </h2>
+
+            <br>
+
+            <div class="form-grid">
+
+                <div class="campo">
+
+                    <label>
+                        Colaborador
+                    </label>
+
+                    <input
+                    id="colaborador"
+                    placeholder="Nome do colaborador">
+
+                </div>
+
+                <div class="campo">
+
+                    <label>
+                        Matrícula
+                    </label>
+
+                    <input
+                    id="matricula">
+
+                </div>
+
+                <div class="campo">
+
+                    <label>
+                        Equipamento
+                    </label>
+
+                    <input
+                    id="equipamento">
+
+                </div>
+
+                <div class="campo">
+
+                    <label>
+                        Quantidade
+                    </label>
+
+                    <input
+                    id="quantidade"
+                    type="number"
+                    value="1">
+
+                </div>
+
+                <div class="campo">
+
+                    <label>
+                        Tipo
+                    </label>
+
+                    <select id="tipoMov">
+
+                        <option>
+                            Entrega
+                        </option>
+
+                        <option>
+                            Devolução
+                        </option>
+
+                        <option>
+                            Transferência
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="campo">
+
+                    <label>
+                        Data
+                    </label>
+
+                    <input
+                    type="date"
+                    id="dataMov">
+
+                </div>
+
+                <div
+                class="campo campo-full">
+
+                    <label>
+                        Observação
+                    </label>
+
+                    <textarea
+                    id="observacao"></textarea>
+
+                </div>
+
+            </div>
+
+            <div class="botoes">
+
+                <button
+                class="btn btn-salvar"
+                onclick="salvarMovimentacao()">
+
+                    Salvar Movimentação
+
+                </button>
+
+                <button
+                class="btn btn-voltar"
+                onclick="fecharFormulario()">
+
+                    Cancelar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div
+    class="card historico"
+    id="historicoMov"
+    style="display:none">
+
+        <h2>
+            Histórico de Movimentações
+        </h2>
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Data</th>
+                    <th>Colaborador</th>
+                    <th>Material</th>
+                    <th>Tipo</th>
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr>
+
+                    <td>01/08/2026</td>
+                    <td>Pedro Fillype</td>
+                    <td>Capacete Classe B</td>
+                    <td>Entrega</td>
+
+                    <td>
+
+                        <span class="badge">
+                            Concluído
+                        </span>
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td>01/08/2026</td>
+                    <td>João Silva</td>
+                    <td>Detector de Tensão</td>
+                    <td>Devolução</td>
+
+                    <td>
+
+                        <span class="badge">
+                            Concluído
+                        </span>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script>
+
+let tipoSelecionado = "";
+
+function selecionarTipo(card,tipo){
+
+    document
+    .querySelectorAll(".opcao")
+    .forEach(x =>
+        x.classList.remove("ativa")
+    );
+
+    card.classList.add("ativa");
+
+    tipoSelecionado = tipo;
+
+    document
+    .getElementById(
+        "tituloMovimentacao"
+    ).innerText =
+    "Movimentação de " + tipo;
+
+    document
+    .getElementById(
+        "formularioMov"
+    ).style.display =
+    "block";
+
+}
+
+function fecharFormulario(){
+
+    document
+    .getElementById(
+        "formularioMov"
+    ).style.display =
+    "none";
+
+}
+
+function abrirConsulta(){
+
+    document
+    .getElementById(
+        "historicoMov"
+    ).style.display =
+    "block";
+
+}
+
+async function salvarMovimentacao(){
+
+    const dados = {
+
+        categoria:
+        tipoSelecionado,
+
+        colaborador:
+        document.getElementById("colaborador").value,
+
+        matricula:
+        document.getElementById("matricula").value,
+
+        equipamento:
+        document.getElementById("equipamento").value,
+
+        quantidade:
+        document.getElementById("quantidade").value,
+
+        tipo:
+        document.getElementById("tipoMov").value,
+
+        data:
+        document.getElementById("dataMov").value,
+
+       
