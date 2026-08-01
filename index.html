@@ -6,9 +6,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Movimentações</title>
+<title>Movimentações - Controle de Material</title>
 
-<link rel="stylesheet"
+<link
+rel="stylesheet"
 href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
 <style>
@@ -17,260 +18,506 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.c
     --azul:#0097CE;
     --azulEscuro:#0077B6;
     --laranja:#F36F21;
+    --verde:#28A745;
+    --vermelho:#DC3545;
+    --amarelo:#FFC107;
     --cinza:#F5F7FA;
+    --texto:#222;
+    --borda:#E1E5EA;
 }
 
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:'Segoe UI',sans-serif;
+    font-family:"Segoe UI",sans-serif;
 }
 
 body{
     background:var(--cinza);
+    color:var(--texto);
 }
 
-.container{
+/* ==============================
+   LAYOUT
+============================== */
 
-    max-width:1200px;
-
-    margin:auto;
-
-    padding:30px;
-
+.layout{
+    display:flex;
+    min-height:100vh;
 }
 
-.titulo{
+/* ==============================
+   SIDEBAR
+============================== */
 
+.sidebar{
+    width:260px;
+    background:linear-gradient(180deg,#0097CE,#0077B6);
+    color:white;
+    padding:25px;
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    box-shadow:4px 0 20px rgba(0,0,0,.15);
+}
+
+.logo{
+    padding-bottom:20px;
     margin-bottom:25px;
-
+    border-bottom:1px solid rgba(255,255,255,.25);
 }
 
-.titulo h1{
-
-    color:#222;
-
+.logo h1{
+    font-size:31px;
+    font-weight:900;
+    letter-spacing:.5px;
 }
+
+.logo span{
+    font-size:14px;
+    opacity:.9;
+}
+
+.menu{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.menu a{
+    color:white;
+    text-decoration:none;
+    padding:13px 14px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-weight:600;
+    transition:.2s;
+}
+
+.menu a:hover{
+    background:rgba(255,255,255,.15);
+    transform:translateX(4px);
+}
+
+.menu a.ativo{
+    background:white;
+    color:var(--azul);
+}
+
+/* ==============================
+   MAIN
+============================== */
+
+.main{
+    margin-left:260px;
+    width:calc(100% - 260px);
+    padding:25px;
+}
+
+/* ==============================
+   HEADER
+============================== */
+
+.header{
+    background:white;
+    border-radius:22px;
+    padding:24px 28px;
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.header h1{
+    font-size:30px;
+    color:#1f2937;
+}
+
+.header p{
+    color:#6b7280;
+    margin-top:4px;
+}
+
+.header-right{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.user-box{
+    text-align:right;
+}
+
+.user-box strong{
+    display:block;
+    font-size:15px;
+}
+
+.user-box small{
+    color:#666;
+}
+
+.btn-icon{
+    border:none;
+    background:#f1f5f9;
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    cursor:pointer;
+    color:#333;
+    font-size:18px;
+}
+
+.btn-icon:hover{
+    background:#e2e8f0;
+}
+
+.btn-sair{
+    color:#dc3545;
+}
+
+/* ==============================
+   CARD PADRÃO
+============================== */
 
 .card{
-
     background:white;
-
-    border-radius:20px;
-
-    padding:25px;
-
-    box-shadow:
-    0 6px 20px rgba(0,0,0,.08);
-
+    border-radius:22px;
+    padding:26px;
+    box-shadow:0 8px 22px rgba(0,0,0,.08);
+    margin-bottom:25px;
 }
 
+.card-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+}
+
+.card-title h2{
+    font-size:24px;
+}
+
+.card-title p{
+    color:#6b7280;
+    margin-top:4px;
+}
+
+/* ==============================
+   ETAPAS
+============================== */
+
+.etapas{
+    display:flex;
+    gap:12px;
+    margin-bottom:22px;
+    flex-wrap:wrap;
+}
+
+.etapa{
+    padding:10px 16px;
+    border-radius:50px;
+    background:#edf2f7;
+    color:#64748b;
+    font-size:14px;
+    font-weight:700;
+}
+
+.etapa.ativa{
+    background:var(--azul);
+    color:white;
+}
+
+/* ==============================
+   OPÇÕES
+============================== */
+
 .opcoes{
-
     display:grid;
-
-    grid-template-columns:
-    repeat(auto-fit,minmax(220px,1fr));
-
-    gap:20px;
-
-    margin-top:20px;
-
+    grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:18px;
 }
 
 .opcao{
-
-    border:2px solid #ddd;
-
-    border-radius:16px;
-
-    padding:25px;
-
-    text-align:center;
-
+    border:2px solid var(--borda);
+    border-radius:18px;
+    padding:24px;
     cursor:pointer;
-
     transition:.2s;
-
+    background:white;
+    position:relative;
+    overflow:hidden;
 }
 
 .opcao:hover{
-
-    border-color:#0097CE;
-
+    border-color:var(--azul);
     transform:translateY(-4px);
-
+    box-shadow:0 8px 20px rgba(0,151,206,.12);
 }
 
 .opcao.ativa{
-
-    border-color:#0097CE;
-
-    background:#f1fbff;
-
+    border-color:var(--azul);
+    background:#f0fbff;
 }
 
 .opcao i{
-
-    font-size:42px;
-
-    color:#0097CE;
-
+    font-size:38px;
+    color:var(--azul);
 }
 
 .opcao h3{
-
     margin-top:12px;
-
+    font-size:19px;
 }
 
-.formulario{
+.opcao p{
+    color:#64748b;
+    margin-top:6px;
+    font-size:14px;
+}
 
+/* ==============================
+   FORMULÁRIO
+============================== */
+
+.area-formulario{
     display:none;
+}
 
-    margin-top:25px;
+.form-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:20px;
+    gap:15px;
+}
 
+.form-header h2{
+    font-size:24px;
+}
+
+.tipo-operacao{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.tipo-operacao button{
+    border:2px solid var(--borda);
+    background:white;
+    padding:10px 16px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:700;
+}
+
+.tipo-operacao button.ativo{
+    background:var(--azul);
+    color:white;
+    border-color:var(--azul);
 }
 
 .form-grid{
-
     display:grid;
-
-    grid-template-columns:
-    repeat(2,1fr);
-
-    gap:15px;
-
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
 }
 
 .campo{
-
     display:flex;
-
     flex-direction:column;
+}
 
+.campo-full{
+    grid-column:1 / -1;
 }
 
 .campo label{
-
-    font-weight:600;
-
-    margin-bottom:5px;
-
+    font-weight:700;
+    margin-bottom:6px;
+    color:#374151;
 }
 
 .campo input,
 .campo select,
 .campo textarea{
-
-    border:1px solid #ddd;
-
-    border-radius:10px;
-
+    border:1px solid var(--borda);
+    border-radius:12px;
     padding:12px;
-
+    font-size:15px;
+    background:white;
 }
 
-.campo-full{
-
-    grid-column:1/-1;
-
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus{
+    border-color:var(--azul);
+    outline:none;
+    box-shadow:0 0 0 3px rgba(0,151,206,.12);
 }
 
 textarea{
-
-    resize:none;
-
-    height:100px;
-
+    min-height:100px;
+    resize:vertical;
 }
 
 .botoes{
-
-    margin-top:20px;
-
     display:flex;
-
-    gap:15px;
-
+    gap:14px;
+    margin-top:22px;
+    flex-wrap:wrap;
 }
 
 .btn{
-
     border:none;
-
-    padding:14px 24px;
-
+    padding:14px 22px;
     border-radius:12px;
-
     cursor:pointer;
-
-    font-weight:700;
-
+    font-weight:800;
+    font-size:15px;
 }
 
-.btn-salvar{
-
+.btn-primary{
     background:var(--azul);
-
     color:white;
-
+    box-shadow:0 6px 15px rgba(0,151,206,.25);
 }
 
-.btn-voltar{
-
-    background:#ddd;
-
+.btn-primary:hover{
+    background:var(--azulEscuro);
 }
+
+.btn-secondary{
+    background:#e5e7eb;
+    color:#374151;
+}
+
+.btn-danger{
+    background:#dc3545;
+    color:white;
+}
+
+/* ==============================
+   HISTÓRICO
+============================== */
 
 .historico{
+    display:none;
+}
 
-    margin-top:30px;
+.filtros-historico{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:14px;
+    margin-bottom:18px;
+}
 
+.table-wrap{
+    overflow:auto;
 }
 
 table{
-
     width:100%;
-
     border-collapse:collapse;
-
-    margin-top:15px;
-
+    min-width:800px;
 }
 
-table th{
-
-    background:#0097CE;
-
+th{
+    background:var(--azul);
     color:white;
-
-    padding:12px;
-
     text-align:left;
-
+    padding:13px;
+    font-size:14px;
 }
 
-table td{
-
-    padding:12px;
-
+td{
+    padding:13px;
     border-bottom:1px solid #eee;
-
+    font-size:14px;
 }
 
 .badge{
-
-    background:#28a745;
-
-    color:white;
-
-    padding:5px 10px;
-
-    border-radius:20px;
-
+    padding:6px 11px;
+    border-radius:50px;
     font-size:12px;
+    font-weight:800;
+    display:inline-block;
+}
+
+.badge.ok{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.badge.entrega{
+    background:#dbeafe;
+    color:#1e40af;
+}
+
+.badge.devolucao{
+    background:#ffedd5;
+    color:#9a3412;
+}
+
+.badge.transferencia{
+    background:#ede9fe;
+    color:#5b21b6;
+}
+
+/* ==============================
+   ALERTA
+============================== */
+
+.alerta-info{
+    background:#fff7ed;
+    border-left:5px solid var(--laranja);
+    padding:14px 16px;
+    border-radius:12px;
+    margin-bottom:18px;
+    color:#7c2d12;
+}
+
+/* ==============================
+   RESPONSIVO
+============================== */
+
+@media(max-width:1000px){
+
+    .sidebar{
+        position:relative;
+        width:100%;
+        height:auto;
+    }
+
+    .layout{
+        flex-direction:column;
+    }
+
+    .main{
+        width:100%;
+        margin-left:0;
+    }
+
+    .header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:20px;
+    }
+
+    .header-right{
+        width:100%;
+        justify-content:space-between;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
 
 }
 
@@ -280,486 +527,1069 @@ table td{
 
 <body>
 
-<div class="container">
+<div class="layout">
 
-    <div class="titulo">
+    <!-- MENU LATERAL -->
 
-        <h1>
-            🔄 Movimentações
-        </h1>
+    <aside class="sidebar">
 
-        <p>
-            Selecione o tipo de movimentação.
-        </p>
-
-    </div>
-
-    <div class="card">
-
-        <div class="opcoes">
-
-            <div
-            class="opcao"
-            onclick="selecionarTipo(this,'EPI')">
-
-                <i class="bi bi-shield-check"></i>
-
-                <h3>EPI</h3>
-
-            </div>
-
-            <div
-            class="opcao"
-            onclick="selecionarTipo(this,'EPC')">
-
-                <i class="bi bi-cone-striped"></i>
-
-                <h3>EPC</h3>
-
-            </div>
-
-            <div
-            class="opcao"
-            onclick="selecionarTipo(this,'FERRAMENTAL')">
-
-                <i class="bi bi-tools"></i>
-
-                <h3>Ferramental</h3>
-
-            </div>
-
-            <div
-            class="opcao"
-            onclick="selecionarTipo(this,'ESTOQUE')">
-
-                <i class="bi bi-box-seam"></i>
-
-                <h3>Estoque</h3>
-
-            </div>
-
-            <div
-            class="opcao"
-            onclick="abrirConsulta()">
-
-                <i class="bi bi-search"></i>
-
-                <h3>Verificar Movimentações</h3>
-
-            </div>
-
+        <div class="logo">
+            <h1>ENERGISA</h1>
+            <span>Controle de Materiais</span>
         </div>
 
-        <div
-        class="formulario"
-        id="formularioMov">
+        <nav class="menu">
 
-            <h2
-            id="tituloMovimentacao">
+            index.html
+                <i class="bi bi-grid"></i>
+                Dashboard
+            </a>
 
-                Nova Movimentação
+            equipamentos.html
+                <i class="bi bi-box-seam"></i>
+                Equipamentos
+            </a>
 
-            </h2>
+            lap.html
+                <i class="bi bi-shield-check"></i>
+                LAP
+            </a>
 
-            <br>
+            inventarios.html
+                <i class="bi bi-clipboard-data"></i>
+                Inventários
+            </a>
 
-            <div class="form-grid">
+            movimentacoes.html
+                <i class="bi bi-arrow-left-right"></i>
+                Movimentações
+            </a>
+
+            colaboradores.html
+                <i class="bi bi-people"></i>
+                Colaboradores
+            </a>
+
+            relatorios.html
+                <i class="bi bi-graph-up"></i>
+                Relatórios
+            </a>
+
+            configuracoes.html
+                <i class="bi bi-gear"></i>
+                Configurações
+            </a>
+
+        </nav>
+
+    </aside>
+
+    <!-- CONTEÚDO -->
+
+    <main class="main">
+
+        <!-- HEADER -->
+
+        <header class="header">
+
+            <div>
+                <h1>Movimentações de Materiais</h1>
+                <p>Registre entregas, devoluções, transferências e consultas de EPI, EPC, Ferramental e Estoque.</p>
+            </div>
+
+            <div class="header-right">
+
+                <button class="btn-icon" title="Notificações">
+                    <i class="bi bi-bell"></i>
+                </button>
+
+                <div class="user-box">
+                    <strong id="nomeUsuario">Usuário</strong>
+                    <small id="perfilUsuario">Perfil</small>
+                </div>
+
+                <button class="btn-icon btn-sair" onclick="logout()" title="Sair">
+                    <i class="bi bi-box-arrow-right"></i>
+                </button>
+
+            </div>
+
+        </header>
+
+        <!-- ETAPAS -->
+
+        <div class="etapas">
+            <div class="etapa ativa" id="etapa1">1. Escolher módulo</div>
+            <div class="etapa" id="etapa2">2. Escolher operação</div>
+            <div class="etapa" id="etapa3">3. Preencher dados</div>
+            <div class="etapa" id="etapa4">4. Salvar ou consultar</div>
+        </div>
+
+        <!-- ESCOLHA DO MÓDULO -->
+
+        <section class="card" id="cardModulo">
+
+            <div class="card-title">
+
+                <div>
+                    <h2>O que deseja movimentar?</h2>
+                    <p>Selecione abaixo o tipo de material ou consulte as movimentações já registradas.</p>
+                </div>
+
+            </div>
+
+            <div class="opcoes">
+
+                <div class="opcao" onclick="selecionarModulo(this,'EPI')">
+                    <i class="bi bi-shield-check"></i>
+                    <h3>EPI</h3>
+                    <p>Entrega e devolução de equipamentos de proteção individual.</p>
+                </div>
+
+                <div class="opcao" onclick="selecionarModulo(this,'EPC')">
+                    <i class="bi bi-cone-striped"></i>
+                    <h3>EPC</h3>
+                    <p>Controle de equipamentos de proteção coletiva.</p>
+                </div>
+
+                <div class="opcao" onclick="selecionarModulo(this,'FERRAMENTAL')">
+                    <i class="bi bi-tools"></i>
+                    <h3>Ferramental</h3>
+                    <p>Movimentação de ferramentas e kits operacionais.</p>
+                </div>
+
+                <div class="opcao" onclick="selecionarModulo(this,'ESTOQUE')">
+                    <i class="bi bi-box-seam"></i>
+                    <h3>Estoque</h3>
+                    <p>Entrada, saída e ajuste de estoque de materiais.</p>
+                </div>
+
+                <div class="opcao" onclick="abrirConsulta()">
+                    <i class="bi bi-search"></i>
+                    <h3>Verificar Movimentações</h3>
+                    <p>Consultar histórico, entregas, devoluções e transferências.</p>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ESCOLHA DA OPERAÇÃO -->
+
+        <section class="card area-formulario" id="cardOperacao">
+
+            <div class="form-header">
+
+                <div>
+                    <h2 id="tituloOperacao">Escolha a operação</h2>
+                    <p id="subtituloOperacao">Selecione o tipo de movimentação para continuar.</p>
+                </div>
+
+                <button class="btn btn-secondary" onclick="voltarModulo()">
+                    Voltar
+                </button>
+
+            </div>
+
+            <div class="opcoes">
+
+                <div class="opcao" onclick="selecionarOperacao(this,'ENTREGA')">
+                    <i class="bi bi-box-arrow-down"></i>
+                    <h3>Entrega</h3>
+                    <p>Registrar entrega de material para um colaborador.</p>
+                </div>
+
+                <div class="opcao" onclick="selecionarOperacao(this,'DEVOLUCAO')">
+                    <i class="bi bi-box-arrow-up"></i>
+                    <h3>Devolução</h3>
+                    <p>Registrar retorno de material ao estoque ou base.</p>
+                </div>
+
+                <div class="opcao" onclick="selecionarOperacao(this,'TRANSFERENCIA')">
+                    <i class="bi bi-arrow-left-right"></i>
+                    <h3>Transferência</h3>
+                    <p>Transferir material entre bases, polos ou responsáveis.</p>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- FORMULÁRIO DINÂMICO -->
+
+        <section class="card area-formulario" id="cardFormulario">
+
+            <div class="form-header">
+
+                <div>
+                    <h2 id="tituloFormulario">Nova Movimentação</h2>
+                    <p id="descricaoFormulario">Preencha os dados da movimentação.</p>
+                </div>
+
+                <button class="btn btn-secondary" onclick="voltarOperacao()">
+                    Trocar operação
+                </button>
+
+            </div>
+
+            <div class="alerta-info" id="resumoEscolha">
+                Módulo e operação selecionados aparecerão aqui.
+            </div>
+
+            <div class="form-grid" id="formCampos">
+                <!-- Campos dinâmicos entram aqui -->
+            </div>
+
+            <div class="botoes">
+
+                <button class="btn btn-primary" onclick="salvarMovimentacao()">
+                    <i class="bi bi-check-circle"></i>
+                    Salvar Movimentação
+                </button>
+
+                <button class="btn btn-secondary" onclick="limparFormulario()">
+                    Limpar
+                </button>
+
+                <button class="btn btn-danger" onclick="cancelarTudo()">
+                    Cancelar
+                </button>
+
+            </div>
+
+        </section>
+
+        <!-- HISTÓRICO -->
+
+        <section class="card historico" id="historicoMov">
+
+            <div class="card-title">
+
+                <div>
+                    <h2>Verificar Movimentações</h2>
+                    <p>Consulte movimentações registradas por data, tipo, colaborador ou material.</p>
+                </div>
+
+                <button class="btn btn-secondary" onclick="fecharConsulta()">
+                    Fechar
+                </button>
+
+            </div>
+
+            <div class="filtros-historico">
 
                 <div class="campo">
-
-                    <label>
-                        Colaborador
-                    </label>
-
-                    <input
-                    id="colaborador"
-                    placeholder="Nome do colaborador">
-
+                    <label>Pesquisar</label>
+                    <input id="pesquisaHistorico" placeholder="Colaborador, material ou matrícula">
                 </div>
 
                 <div class="campo">
-
-                    <label>
-                        Matrícula
-                    </label>
-
-                    <input
-                    id="matricula">
-
-                </div>
-
-                <div class="campo">
-
-                    <label>
-                        Equipamento
-                    </label>
-
-                    <input
-                    id="equipamento">
-
-                </div>
-
-                <div class="campo">
-
-                    <label>
-                        Quantidade
-                    </label>
-
-                    <input
-                    id="quantidade"
-                    type="number"
-                    value="1">
-
-                </div>
-
-                <div class="campo">
-
-                    <label>
-                        Tipo
-                    </label>
-
-                    <select id="tipoMov">
-
-                        <option>
-                            Entrega
-                        </option>
-
-                        <option>
-                            Devolução
-                        </option>
-
-                        <option>
-                            Transferência
-                        </option>
-
+                    <label>Categoria</label>
+                    <select id="filtroCategoria">
+                        <option value="">Todas</option>
+                        <option>EPI</option>
+                        <option>EPC</option>
+                        <option>FERRAMENTAL</option>
+                        <option>ESTOQUE</option>
                     </select>
-
                 </div>
 
                 <div class="campo">
-
-                    <label>
-                        Data
-                    </label>
-
-                    <input
-                    type="date"
-                    id="dataMov">
-
+                    <label>Tipo</label>
+                    <select id="filtroTipo">
+                        <option value="">Todos</option>
+                        <option>ENTREGA</option>
+                        <option>DEVOLUCAO</option>
+                        <option>TRANSFERENCIA</option>
+                    </select>
                 </div>
 
-                <div
-                class="campo campo-full">
-
-                    <label>
-                        Observação
-                    </label>
-
-                    <textarea
-                    id="observacao"></textarea>
-
+                <div class="campo">
+                    <label>Data</label>
+                    <input type="date" id="filtroData">
                 </div>
 
             </div>
 
             <div class="botoes">
-
-                <button
-                class="btn btn-salvar"
-                onclick="salvarMovimentacao()">
-
-                    Salvar Movimentação
-
+                <button class="btn btn-primary" onclick="filtrarHistorico()">
+                    <i class="bi bi-search"></i>
+                    Buscar
                 </button>
 
-                <button
-                class="btn btn-voltar"
-                onclick="fecharFormulario()">
-
-                    Cancelar
-
+                <button class="btn btn-secondary" onclick="limparFiltrosHistorico()">
+                    Limpar filtros
                 </button>
+            </div>
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Categoria</th>
+                            <th>Tipo</th>
+                            <th>Colaborador / Origem</th>
+                            <th>Material</th>
+                            <th>Quantidade</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tbodyHistorico">
+                        <tr>
+                            <td>01/08/2026</td>
+                            <td>EPI</td>
+                            <td><span class="badge entrega">ENTREGA</span></td>
+                            <td>Pedro Fillype</td>
+                            <td>Capacete Classe B</td>
+                            <td>1</td>
+                            <td><span class="badge ok">Concluído</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>01/08/2026</td>
+                            <td>FERRAMENTAL</td>
+                            <td><span class="badge devolucao">DEVOLUÇÃO</span></td>
+                            <td>João Silva</td>
+                            <td>Detector de Tensão</td>
+                            <td>1</td>
+                            <td><span class="badge ok">Concluído</span></td>
+                        </tr>
+                    </tbody>
+
+                </table>
 
             </div>
 
-        </div>
+        </section>
 
-    </div>
-
-    <div
-    class="card historico"
-    id="historicoMov"
-    style="display:none">
-
-        <h2>
-            Histórico de Movimentações
-        </h2>
-
-        <table>
-
-            <thead>
-
-                <tr>
-
-                    <th>Data</th>
-                    <th>Colaborador</th>
-                    <th>Material</th>
-                    <th>Tipo</th>
-                    <th>Status</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                <tr>
-
-                    <td>01/08/2026</td>
-                    <td>Pedro Fillype</td>
-                    <td>Capacete Classe B</td>
-                    <td>Entrega</td>
-
-                    <td>
-
-                        <span class="badge">
-                            Concluído
-                        </span>
-
-                    </td>
-
-                </tr>
-
-                <tr>
-
-                    <td>01/08/2026</td>
-                    <td>João Silva</td>
-                    <td>Detector de Tensão</td>
-                    <td>Devolução</td>
-
-                    <td>
-
-                        <span class="badge">
-                            Concluído
-                        </span>
-
-                    </td>
-
-                </tr>
-
-            </tbody>
-
-        </table>
-
-    </div>
+    </main>
 
 </div>
 
+<script src="https://coec-epb.github.io/Controle-de-EPI-EPC-e-Ferramental---DEOP/auth.js"></script>
+
 <script>
 
-let tipoSelecionado = "";
+let moduloSelecionado = "";
+let operacaoSelecionada = "";
 
-function selecionarTipo(card,tipo){
+function el(id){
+    return document.getElementById(id);
+}
 
-    document
-    .querySelectorAll(".opcao")
-    .forEach(x =>
-        x.classList.remove("ativa")
+function setTexto(id, texto){
+    const elemento = el(id);
+    if(elemento){
+        elemento.innerText = texto || "";
+    }
+}
+
+function valor(id){
+    const elemento = el(id);
+    return elemento ? String(elemento.value || "").trim() : "";
+}
+
+function hojeISO(){
+    return new Date().toISOString().split("T")[0];
+}
+
+function atualizarEtapas(etapa){
+
+    ["etapa1","etapa2","etapa3","etapa4"].forEach(id => {
+        el(id).classList.remove("ativa");
+    });
+
+    if(etapa >= 1) el("etapa1").classList.add("ativa");
+    if(etapa >= 2) el("etapa2").classList.add("ativa");
+    if(etapa >= 3) el("etapa3").classList.add("ativa");
+    if(etapa >= 4) el("etapa4").classList.add("ativa");
+
+}
+
+/* ==============================
+   USUÁRIO
+============================== */
+
+function carregarUsuario(){
+
+    let usuario = null;
+
+    try{
+        if(typeof getUser === "function"){
+            usuario = getUser();
+        }
+    }catch(e){
+        usuario = null;
+    }
+
+    usuario = usuario || {};
+
+    const nome =
+    usuario.nome ||
+    usuario.lider ||
+    "Usuário";
+
+    const perfil =
+    usuario.perfil ||
+    (
+        usuario.isAdmin
+        ? "Administrador"
+        : "Usuário"
     );
+
+    setTexto("nomeUsuario", nome);
+
+    setTexto(
+        "perfilUsuario",
+        perfil === "admin" ? "Administrador" : perfil
+    );
+
+}
+
+/* ==============================
+   FLUXO
+============================== */
+
+function selecionarModulo(card, modulo){
+
+    document.querySelectorAll("#cardModulo .opcao")
+    .forEach(item => item.classList.remove("ativa"));
 
     card.classList.add("ativa");
 
-    tipoSelecionado = tipo;
+    moduloSelecionado = modulo;
 
-    document
-    .getElementById(
-        "tituloMovimentacao"
-    ).innerText =
-    "Movimentação de " + tipo;
+    setTexto("tituloOperacao", "Movimentação de " + modulo);
 
-    document
-    .getElementById(
-        "formularioMov"
-    ).style.display =
-    "block";
+    setTexto(
+        "subtituloOperacao",
+        "Agora selecione se será entrega, devolução ou transferência."
+    );
 
-}
+    el("cardOperacao").style.display = "block";
+    el("cardFormulario").style.display = "none";
+    el("historicoMov").style.display = "none";
 
-function fecharFormulario(){
+    atualizarEtapas(2);
 
-    document
-    .getElementById(
-        "formularioMov"
-    ).style.display =
-    "none";
+    window.scrollTo({
+        top:el("cardOperacao").offsetTop - 20,
+        behavior:"smooth"
+    });
 
 }
 
-function abrirConsulta(){
+function selecionarOperacao(card, operacao){
 
-    document
-    .getElementById(
-        "historicoMov"
-    ).style.display =
-    "block";
+    document.querySelectorAll("#cardOperacao .opcao")
+    .forEach(item => item.classList.remove("ativa"));
+
+    card.classList.add("ativa");
+
+    operacaoSelecionada = operacao;
+
+    montarFormulario();
+
+    el("cardFormulario").style.display = "block";
+
+    atualizarEtapas(3);
+
+    window.scrollTo({
+        top:el("cardFormulario").offsetTop - 20,
+        behavior:"smooth"
+    });
 
 }
+
+function voltarModulo(){
+
+    moduloSelecionado = "";
+    operacaoSelecionada = "";
+
+    document.querySelectorAll(".opcao")
+    .forEach(item => item.classList.remove("ativa"));
+
+    el("cardOperacao").style.display = "none";
+    el("cardFormulario").style.display = "none";
+
+    atualizarEtapas(1);
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+function voltarOperacao(){
+
+    operacaoSelecionada = "";
+
+    document.querySelectorAll("#cardOperacao .opcao")
+    .forEach(item => item.classList.remove("ativa"));
+
+    el("cardFormulario").style.display = "none";
+
+    atualizarEtapas(2);
+
+}
+
+function cancelarTudo(){
+
+    limparFormulario();
+    voltarModulo();
+
+}
+
+/* ==============================
+   FORM DINÂMICO
+============================== */
+
+function montarFormulario(){
+
+    setTexto(
+        "tituloFormulario",
+        tituloPorOperacao()
+    );
+
+    setTexto(
+        "descricaoFormulario",
+        descricaoPorOperacao()
+    );
+
+    el("resumoEscolha").innerHTML =
+    `<strong>Módulo:</strong> ${moduloSelecionado}
+     &nbsp; | &nbsp;
+     <strong>Operação:</strong> ${labelOperacao(operacaoSelecionada)}`;
+
+    if(operacaoSelecionada === "ENTREGA"){
+        montarEntrega();
+    }
+
+    if(operacaoSelecionada === "DEVOLUCAO"){
+        montarDevolucao();
+    }
+
+    if(operacaoSelecionada === "TRANSFERENCIA"){
+        montarTransferencia();
+    }
+
+    const data = el("dataMov");
+    if(data){
+        data.value = hojeISO();
+    }
+
+}
+
+function tituloPorOperacao(){
+
+    if(operacaoSelecionada === "ENTREGA"){
+        return "Registrar Entrega";
+    }
+
+    if(operacaoSelecionada === "DEVOLUCAO"){
+        return "Registrar Devolução";
+    }
+
+    if(operacaoSelecionada === "TRANSFERENCIA"){
+        return "Registrar Transferência";
+    }
+
+    return "Nova Movimentação";
+
+}
+
+function descricaoPorOperacao(){
+
+    if(operacaoSelecionada === "ENTREGA"){
+        return "Informe o colaborador que receberá o material.";
+    }
+
+    if(operacaoSelecionada === "DEVOLUCAO"){
+        return "Informe o colaborador e a condição do material devolvido.";
+    }
+
+    if(operacaoSelecionada === "TRANSFERENCIA"){
+        return "Informe origem, destino e material transferido.";
+    }
+
+    return "Preencha os dados da movimentação.";
+
+}
+
+function labelOperacao(op){
+
+    if(op === "ENTREGA") return "Entrega";
+    if(op === "DEVOLUCAO") return "Devolução";
+    if(op === "TRANSFERENCIA") return "Transferência";
+
+    return op || "";
+
+}
+
+function montarEntrega(){
+
+    el("formCampos").innerHTML = `
+
+        <div class="campo">
+            <label>Colaborador que recebeu</label>
+            <input id="colaborador" placeholder="Nome do colaborador">
+        </div>
+
+        <div class="campo">
+            <label>Matrícula</label>
+            <input id="matricula" placeholder="Matrícula">
+        </div>
+
+        <div class="campo">
+            <label>Material / Equipamento</label>
+            <input id="equipamento" placeholder="Ex.: Capacete Classe B">
+        </div>
+
+        <div class="campo">
+            <label>Quantidade</label>
+            <input id="quantidade" type="number" min="1" value="1">
+        </div>
+
+        <div class="campo">
+            <label>Regional</label>
+            <input id="regional" placeholder="Ex.: DEOP-L">
+        </div>
+
+        <div class="campo">
+            <label>Polo / Base</label>
+            <input id="polo" placeholder="Ex.: Cajazeiras">
+        </div>
+
+        <div class="campo">
+            <label>Data da entrega</label>
+            <input id="dataMov" type="date">
+        </div>
+
+        <div class="campo">
+            <label>Responsável pela entrega</label>
+            <input id="responsavel" placeholder="Nome do responsável">
+        </div>
+
+        <div class="campo campo-full">
+            <label>Observação</label>
+            <textarea id="observacao" placeholder="Detalhes adicionais, CA, condição, validade etc."></textarea>
+        </div>
+
+    `;
+
+}
+
+function montarDevolucao(){
+
+    el("formCampos").innerHTML = `
+
+        <div class="campo">
+            <label>Colaborador que devolveu</label>
+            <input id="colaborador" placeholder="Nome do colaborador">
+        </div>
+
+        <div class="campo">
+            <label>Matrícula</label>
+            <input id="matricula" placeholder="Matrícula">
+        </div>
+
+        <div class="campo">
+            <label>Material / Equipamento</label>
+            <input id="equipamento" placeholder="Ex.: Luva isolante">
+        </div>
+
+        <div class="campo">
+            <label>Quantidade</label>
+            <input id="quantidade" type="number" min="1" value="1">
+        </div>
+
+        <div class="campo">
+            <label>Estado do material</label>
+            <select id="estadoMaterial">
+                <option value="">Selecione</option>
+                <option>Bom estado</option>
+                <option>Danificado</option>
+                <option>Vencido</option>
+                <option>Extraviado</option>
+                <option>Necessita avaliação</option>
+            </select>
+        </div>
+
+        <div class="campo">
+            <label>Destino</label>
+            <select id="destino">
+                <option>Estoque</option>
+                <option>Descarte</option>
+                <option>Manutenção</option>
+                <option>Inspeção</option>
+            </select>
+        </div>
+
+        <div class="campo">
+            <label>Data da devolução</label>
+            <input id="dataMov" type="date">
+        </div>
+
+        <div class="campo">
+            <label>Responsável pelo recebimento</label>
+            <input id="responsavel" placeholder="Nome do responsável">
+        </div>
+
+        <div class="campo campo-full">
+            <label>Motivo / Observação</label>
+            <textarea id="observacao" placeholder="Informe o motivo da devolução e detalhes do material."></textarea>
+        </div>
+
+    `;
+
+}
+
+function montarTransferencia(){
+
+    el("formCampos").innerHTML = `
+
+        <div class="campo">
+            <label>Origem</label>
+            <input id="origem" placeholder="Base, polo, estoque ou responsável de origem">
+        </div>
+
+        <div class="campo">
+            <label>Destino</label>
+            <input id="destino" placeholder="Base, polo, estoque ou responsável de destino">
+        </div>
+
+        <div class="campo">
+            <label>Material / Equipamento</label>
+            <input id="equipamento" placeholder="Ex.: Detector de tensão">
+        </div>
+
+        <div class="campo">
+            <label>Quantidade</label>
+            <input id="quantidade" type="number" min="1" value="1">
+        </div>
+
+        <div class="campo">
+            <label>Regional</label>
+            <input id="regional" placeholder="Ex.: DEOP-L">
+        </div>
+
+        <div class="campo">
+            <label>Polo / Base</label>
+            <input id="polo" placeholder="Ex.: Cajazeiras">
+        </div>
+
+        <div class="campo">
+            <label>Data da transferência</label>
+            <input id="dataMov" type="date">
+        </div>
+
+        <div class="campo">
+            <label>Responsável pela transferência</label>
+            <input id="responsavel" placeholder="Nome do responsável">
+        </div>
+
+        <div class="campo campo-full">
+            <label>Observação</label>
+            <textarea id="observacao" placeholder="Informe detalhes da transferência."></textarea>
+        </div>
+
+    `;
+
+}
+
+/* ==============================
+   SALVAR
+============================== */
 
 async function salvarMovimentacao(){
 
-    const dados = {
-
-        categoria:
-        tipoSelecionado,
-
-        colaborador:
-        document.getElementById("colaborador").value,
-
-        matricula:
-        document.getElementById("matricula").value,
-
-        equipamento:
-        document.getElementById("equipamento").value,
-
-        quantidade:
-        document.getElementById("quantidade").value,
-
-        tipo:
-        document.getElementById("tipoMov").value,
-
-        data:
-        document.getElementById("dataMov").value,
-
-               observacao:
-        document.getElementById("observacao").value
-
-    };
-
-    if(!tipoSelecionado){
-
-        alert(
-            "Selecione o tipo da movimentação."
-        );
-
+    if(!moduloSelecionado){
+        alert("Selecione o módulo da movimentação.");
         return;
-
     }
 
-    if(!dados.colaborador){
-
-        alert(
-            "Informe o colaborador."
-        );
-
+    if(!operacaoSelecionada){
+        alert("Selecione a operação.");
         return;
-
     }
+
+    const dados = coletarDadosFormulario();
 
     if(!dados.equipamento){
-
-        alert(
-            "Informe o equipamento."
-        );
-
+        alert("Informe o material ou equipamento.");
         return;
+    }
+
+    if(!dados.quantidade || Number(dados.quantidade) <= 0){
+        alert("Informe uma quantidade válida.");
+        return;
+    }
+
+    if(operacaoSelecionada === "ENTREGA" || operacaoSelecionada === "DEVOLUCAO"){
+
+        if(!dados.colaborador){
+            alert("Informe o colaborador.");
+            return;
+        }
+
+    }
+
+    if(operacaoSelecionada === "TRANSFERENCIA"){
+
+        if(!dados.origem || !dados.destino){
+            alert("Informe origem e destino.");
+            return;
+        }
 
     }
 
     try{
 
         /*
-        QUANDO CRIAR O ENDPOINT:
+        Quando criar o endpoint no Worker, deixe este bloco ativo.
 
-        POST /movimentacoes
+        const resp = await authFetch(`${API}/movimentacoes`, {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(dados)
+        });
 
-        DESCOMENTE:
+        const resposta = await resp.json();
 
-        const resp =
-        await authFetch(
-            `${API}/movimentacoes`,
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":
-                    "application/json"
-                },
-                body:JSON.stringify(dados)
-            }
-        );
-
-        if(!resp.ok){
-            throw new Error(
-                "Erro ao salvar"
-            );
+        if(!resp.ok || resposta.ok === false || resposta.sucesso === false){
+            throw new Error(resposta.error || resposta.mensagem || "Erro ao salvar movimentação.");
         }
         */
 
-        alert(
-            "✅ Movimentação registrada com sucesso."
-        );
+        console.log("Movimentação para salvar:", dados);
+
+        alert("✅ Movimentação registrada com sucesso.");
+
+        adicionarLinhaHistoricoLocal(dados);
+
+        atualizarEtapas(4);
 
         limparFormulario();
 
-    }
-
-    catch(e){
+    }catch(e){
 
         console.error(e);
 
-        alert(
-            "❌ Erro ao salvar movimentação."
-        );
+        alert("❌ Erro ao salvar movimentação.");
 
     }
+
+}
+
+function coletarDadosFormulario(){
+
+    return {
+
+        categoria:moduloSelecionado,
+
+        operacao:operacaoSelecionada,
+
+        colaborador:valor("colaborador"),
+
+        matricula:valor("matricula"),
+
+        equipamento:valor("equipamento"),
+
+        quantidade:valor("quantidade"),
+
+        regional:valor("regional"),
+
+        polo:valor("polo"),
+
+        origem:valor("origem"),
+
+        destino:valor("destino"),
+
+        estadoMaterial:valor("estadoMaterial"),
+
+        data:valor("dataMov"),
+
+        responsavel:valor("responsavel"),
+
+        observacao:valor("observacao"),
+
+        criado_em:new Date().toISOString()
+
+    };
 
 }
 
 function limparFormulario(){
 
-    document.getElementById(
-        "colaborador"
-    ).value = "";
+    const campos =
+    el("formCampos")
+    .querySelectorAll("input, select, textarea");
 
-    document.getElementById(
-        "matricula"
-    ).value = "";
+    campos.forEach(campo => {
 
-    document.getElementById(
-        "equipamento"
-    ).value = "";
+        if(campo.type === "number"){
+            campo.value = 1;
+        }
 
-    document.getElementById(
-        "quantidade"
-    ).value = 1;
+        else if(campo.type === "date"){
+            campo.value = hojeISO();
+        }
 
-    document.getElementById(
-        "tipoMov"
-    ).selectedIndex = 0;
+        else{
+            campo.value = "";
+        }
 
-    document.getElementById(
-        "dataMov"
-    ).valueAsDate =
-    new Date();
-
-    document.getElementById(
-        "observacao"
-    ).value = "";
+    });
 
 }
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+function adicionarLinhaHistoricoLocal(dados){
 
-        document.getElementById(
-            "dataMov"
-        ).valueAsDate =
-        new Date();
+    const tbody = el("tbodyHistorico");
 
+    if(!tbody){
+        return;
     }
-);
+
+    const tr = document.createElement("tr");
+
+    const dataFormatada =
+    dados.data
+    ? dados.data.split("-").reverse().join("/")
+    : new Date().toLocaleDateString("pt-BR");
+
+    const pessoaOrigem =
+    dados.colaborador ||
+    dados.origem ||
+    "-";
+
+    const classe =
+    dados.operacao === "ENTREGA"
+    ? "entrega"
+    : dados.operacao === "DEVOLUCAO"
+    ? "devolucao"
+    : "transferencia";
+
+    tr.innerHTML = `
+        <td>${dataFormatada}</td>
+        <td>${dados.categoria}</td>
+        <td><span class="badge ${classe}">${dados.operacao}</span></td>
+        <td>${pessoaOrigem}</td>
+        <td>${dados.equipamento}</td>
+        <td>${dados.quantidade}</td>
+        <td><span class="badge ok">Concluído</span></td>
+    `;
+
+    tbody.prepend(tr);
+
+}
+
+/* ==============================
+   CONSULTA
+============================== */
+
+function abrirConsulta(){
+
+    el("historicoMov").style.display = "block";
+    el("cardOperacao").style.display = "none";
+    el("cardFormulario").style.display = "none";
+
+    atualizarEtapas(4);
+
+    window.scrollTo({
+        top:el("historicoMov").offsetTop - 20,
+        behavior:"smooth"
+    });
+
+}
+
+function fecharConsulta(){
+
+    el("historicoMov").style.display = "none";
+    atualizarEtapas(1);
+
+}
+
+function filtrarHistorico(){
+
+    const pesquisa =
+    valor("pesquisaHistorico").toLowerCase();
+
+    const categoria =
+    valor("filtroCategoria");
+
+    const tipo =
+    valor("filtroTipo");
+
+    const data =
+    valor("filtroData");
+
+    const linhas =
+    el("tbodyHistorico").querySelectorAll("tr");
+
+    linhas.forEach(linha => {
+
+        const textoLinha =
+        linha.innerText.toLowerCase();
+
+        const okPesquisa =
+        !pesquisa || textoLinha.includes(pesquisa);
+
+        const okCategoria =
+        !categoria || textoLinha.includes(categoria.toLowerCase());
+
+        const okTipo =
+        !tipo || textoLinha.includes(tipo.toLowerCase());
+
+        let okData = true;
+
+        if(data){
+            const dataBR =
+            data.split("-").reverse().join("/");
+            okData = textoLinha.includes(dataBR);
+        }
+
+        linha.style.display =
+        okPesquisa && okCategoria && okTipo && okData
+        ? ""
+        : "none";
+
+    });
+
+}
+
+function limparFiltrosHistorico(){
+
+    el("pesquisaHistorico").value = "";
+    el("filtroCategoria").value = "";
+    el("filtroTipo").value = "";
+    el("filtroData").value = "";
+
+    filtrarHistorico();
+
+}
+
+/* ==============================
+   INICIALIZAÇÃO
+============================== */
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    carregarUsuario();
+
+    atualizarEtapas(1);
+
+});
 
 </script>
 
 </body>
+
 </html>
