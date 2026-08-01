@@ -1308,81 +1308,186 @@ function montarTransferencia(){
 
 async function salvarMovimentacao(){
 
-    if(!moduloSelecionado){
-        alert("Selecione o módulo da movimentação.");
+    const dados = {
+
+        categoria: tipoSelecionado,
+
+        colaborador:
+        document.getElementById("colaborador").value.trim(),
+
+        matricula:
+        document.getElementById("matricula").value.trim(),
+
+        equipamento:
+        document.getElementById("equipamento").value.trim(),
+
+        quantidade:
+        Number(
+            document.getElementById("quantidade").value
+        ),
+
+        operacao:
+        document.getElementById("tipoMov").value.toUpperCase(),
+
+        data:
+        document.getElementById("dataMov").value,
+
+        observacao:
+        document.getElementById("observacao").value.trim()
+
+    };
+
+    if(!tipoSelecionado){
+
+        alert("Selecione uma categoria.");
+
         return;
+
     }
 
-    if(!operacaoSelecionada){
-        alert("Selecione a operação.");
-        return;
-    }
+    if(!dados.colaborador){
 
-    const dados = coletarDadosFormulario();
+        alert("Informe o colaborador.");
+
+        return;
+
+    }
 
     if(!dados.equipamento){
-        alert("Informe o material ou equipamento.");
+
+        alert("Informe o equipamento.");
+
         return;
-    }
-
-    if(!dados.quantidade || Number(dados.quantidade) <= 0){
-        alert("Informe uma quantidade válida.");
-        return;
-    }
-
-    if(operacaoSelecionada === "ENTREGA" || operacaoSelecionada === "DEVOLUCAO"){
-
-        if(!dados.colaborador){
-            alert("Informe o colaborador.");
-            return;
-        }
-
-    }
-
-    if(operacaoSelecionada === "TRANSFERENCIA"){
-
-        if(!dados.origem || !dados.destino){
-            alert("Informe origem e destino.");
-            return;
-        }
 
     }
 
     try{
 
-        /*
-        Quando criar o endpoint no Worker, deixe este bloco ativo.
+        const resp =
+        await authFetch(
 
-        const resp = await authFetch(`${API}/movimentacoes`, {
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify(dados)
-        });
+            `${API}/movimentacoes`,
 
-        const resposta = await resp.json();
+            {
+                method:"POST",
 
-        if(!resp.ok || resposta.ok === false || resposta.sucesso === false){
-            throw new Error(resposta.error || resposta.mensagem || "Erro ao salvar movimentação.");
+                headers:{
+                    "Content-Type":
+                    "application/json"
+                },
+
+                body:
+                JSON.stringify(dados)
+
+            }
+
+        );
+
+        const resultado =
+        await resp.json();
+
+        if(
+            !resp.ok ||
+            resultado.sucesso === false
+        ){
+            throw new Error(
+                resultado.mensagem ||
+                "Erro ao salvar."
+            );
         }
-        */
 
-        console.log("Movimentação para salvar:", dados);
-
-        alert("✅ Movimentação registrada com sucesso.");
-
-        adicionarLinhaHistoricoLocal(dados);
-
-        atualizarEtapas(4);
+        alert(
+            "✅ Movimentação registrada com sucesso."
+        );
 
         limparFormulario();
 
-    }catch(e){
+        await carregarHistorico();
+
+    }
+
+    catch(e){
 
         console.error(e);
 
-        alert("❌ Erro ao salvar movimentação.");
+        alert(
+            "❌ " + e.message
+        );
+
+    }
+
+}
+    async function carregarHistorico(){
+
+    try{
+
+        const resp =
+        await authFetch(
+            `${API}/movimentacoes`
+        );
+
+        const dados =
+        await resp.json();
+
+        const lista =
+        dados.dados || [];
+
+        const tbody =
+        document.querySelector(
+            "#historicoMov tbody"
+        );
+
+        tbody.innerHTML = "";
+
+        lista.forEach(item => {
+
+            tbody.innerHTML += `
+                <tr>
+
+                    <td>
+                        ${
+                            item.data_movimentacao || ""
+                        }
+                    </td>
+
+                    <td>
+                        ${
+                            item.colaborador || ""
+                        }
+                    </td>
+
+                    <td>
+                        ${
+                            item.equipamento || ""
+                        }
+                    </td>
+
+                    <td>
+                        ${
+                            item.operacao || ""
+                        }
+                    </td>
+
+                    <td>
+
+                        <span class="badge">
+
+                            Concluído
+
+                        </span>
+
+                    </td>
+
+                </tr>
+            `;
+
+        });
+
+    }
+
+    catch(e){
+
+        console.error(e);
 
     }
 
@@ -1580,13 +1685,19 @@ function limparFiltrosHistorico(){
    INICIALIZAÇÃO
 ============================== */
 
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
 
-    carregarUsuario();
+        document.getElementById(
+            "dataMov"
+        ).valueAsDate =
+        new Date();
 
-    atualizarEtapas(1);
+        await carregarHistorico();
 
-});
+    }
+);
 
 </script>
 
