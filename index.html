@@ -518,6 +518,48 @@ td{
     .form-grid{
         grid-template-columns:1fr;
     }
+    .campo-autocomplete{
+    position:relative;
+}
+
+.sugestoes{
+    position:absolute;
+    top:74px;
+    left:0;
+    right:0;
+    background:white;
+    border:1px solid #ddd;
+    border-radius:12px;
+    box-shadow:0 8px 20px rgba(0,0,0,.12);
+    z-index:50;
+    display:none;
+    max-height:260px;
+    overflow:auto;
+}
+
+.sugestao-item{
+    padding:12px;
+    cursor:pointer;
+    border-bottom:1px solid #eee;
+}
+
+.sugestao-item:hover{
+    background:#f1fbff;
+}
+
+.sugestao-item strong{
+    display:block;
+    color:#222;
+}
+
+.sugestao-item small{
+    color:#666;
+}
+
+input[readonly]{
+    background:#f8fafc;
+    color:#555;
+}
 
 }
 
@@ -1137,7 +1179,24 @@ function montarEntrega(){
 
         <div class="campo">
             <label>Colaborador que recebeu</label>
-            <input id="colaborador" placeholder="Nome do colaborador">
+            <div class="campo campo-autocomplete">
+
+    <label>
+        Colaborador
+    </label>
+
+    <input
+    id="colaborador"
+    placeholder="Digite nome ou matrícula"
+    autocomplete="off"
+    oninput="buscarColaboradorInteligente()">
+
+    <div
+    id="sugestoesColaboradores"
+    class="sugestoes">
+    </div>
+
+</div>
         </div>
 
         <div class="campo">
@@ -1310,32 +1369,39 @@ async function salvarMovimentacao(){
 
     const dados = {
 
-        categoria: tipoSelecionado,
+    categoria:
+    tipoSelecionado,
 
-        colaborador:
-        document.getElementById("colaborador").value.trim(),
+    colaborador:
+    document.getElementById("colaborador").value.trim(),
 
-        matricula:
-        document.getElementById("matricula").value.trim(),
+    matricula:
+    document.getElementById("matricula").value.trim(),
 
-        equipamento:
-        document.getElementById("equipamento").value.trim(),
+    equipamento:
+    document.getElementById("equipamento").value.trim(),
 
-        quantidade:
-        Number(
-            document.getElementById("quantidade").value
-        ),
+    quantidade:
+    Number(
+        document.getElementById("quantidade").value
+    ),
 
-        operacao:
-        document.getElementById("tipoMov").value.toUpperCase(),
+    operacao:
+    document.getElementById("tipoMov").value.toUpperCase(),
 
-        data:
-        document.getElementById("dataMov").value,
+    data:
+    document.getElementById("dataMov").value,
 
-        observacao:
-        document.getElementById("observacao").value.trim()
+    regional:
+    document.getElementById("regional")?.value || "",
 
-    };
+    polo:
+    document.getElementById("polo")?.value || "",
+
+    observacao:
+    document.getElementById("observacao").value.trim()
+
+};
 
     if(!tipoSelecionado){
 
@@ -1680,6 +1746,205 @@ function limparFiltrosHistorico(){
     filtrarHistorico();
 
 }
+    let timerBuscaColaborador = null;
+
+async function buscarColaboradorInteligente(){
+
+    clearTimeout(
+        timerBuscaColaborador
+    );
+
+    timerBuscaColaborador =
+    setTimeout(
+        async () => {
+
+            const campo =
+            document.getElementById(
+                "colaborador"
+            );
+
+            const texto =
+            campo.value.trim();
+
+            const box =
+            document.getElementById(
+                "sugestoesColaboradores"
+            );
+
+            if(!texto || texto.length < 2){
+
+                box.style.display = "none";
+                box.innerHTML = "";
+
+                return;
+
+            }
+
+            try{
+
+                const resp =
+                await authFetch(
+                    `${API}/colaboradores/buscar?q=${encodeURIComponent(texto)}`
+                );
+
+                const dados =
+                await resp.json();
+
+                const lista =
+                dados.dados || [];
+
+                renderSugestoesColaboradores(
+                    lista
+                );
+
+            }
+
+            catch(e){
+
+                console.error(
+                    "Erro ao buscar colaborador:",
+                    e
+                );
+
+            }
+
+        },
+        350
+    );
+
+}
+
+
+function renderSugestoesColaboradores(lista){
+
+    const box =
+    document.getElementById(
+        "sugestoesColaboradores"
+    );
+
+    if(!lista.length){
+
+        box.innerHTML = `
+            <div class="sugestao-item">
+                <small>
+                    Nenhum colaborador encontrado
+                </small>
+            </div>
+        `;
+
+        box.style.display = "block";
+
+        return;
+
+    }
+
+    box.innerHTML =
+    lista.map(col => {
+
+        return `
+            <div
+            class="sugestao-item"
+            onclick='selecionarColaborador(${JSON.stringify(col)})'>
+
+                <strong>
+                    ${col.nome || ""}
+                </strong>
+
+                <small>
+                    Matrícula: ${col.matricula || "-"}
+                    ${
+                        col.regional
+                        ? " | " + col.regional
+                        : ""
+                    }
+                    ${
+                        col.polo
+                        ? " | " + col.polo
+                        : ""
+                    }
+                </small>
+
+            </div>
+        `;
+
+    }).join("");
+
+    box.style.display =
+    "block";
+
+}
+
+
+function selecionarColaborador(col){
+
+    document.getElementById(
+        "colaborador"
+    ).value =
+    col.nome || "";
+
+    document.getElementById(
+        "matricula"
+    ).value =
+    col.matricula || "";
+
+    if(
+        document.getElementById("regional")
+    ){
+        document.getElementById(
+            "regional"
+        ).value =
+        col.regional || "";
+    }
+
+    if(
+        document.getElementById("polo")
+    ){
+        document.getElementById(
+            "polo"
+        ).value =
+        col.polo || "";
+    }
+
+    const box =
+    document.getElementById(
+        "sugestoesColaboradores"
+    );
+
+    box.innerHTML = "";
+    box.style.display = "none";
+
+}
+
+    document.addEventListener(
+    "click",
+    function(event){
+
+        const box =
+        document.getElementById(
+            "sugestoesColaboradores"
+        );
+
+        const campo =
+        document.getElementById(
+            "colaborador"
+        );
+
+        if(
+            !box ||
+            !campo
+        ){
+            return;
+        }
+
+        if(
+            event.target !== campo &&
+            !box.contains(event.target)
+        ){
+            box.style.display = "none";
+        }
+
+    }
+);
 
 /* ==============================
    INICIALIZAÇÃO
