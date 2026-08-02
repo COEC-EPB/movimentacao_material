@@ -1509,6 +1509,28 @@ async function salvarMovimentacao(){
         await carregarHistorico();
 
     }
+        if(
+    operacaoSelecionada ===
+    "SUBSTITUIÇÃO"
+){
+
+    const fotos =
+    document.getElementById(
+        "fotos"
+    )?.files || [];
+
+    if(
+        fotos.length === 0
+    ){
+
+        alert(
+            "Anexe pelo menos uma foto da devolução."
+        );
+
+        return;
+
+    }
+}
 
     catch(e){
 
@@ -1524,6 +1546,54 @@ async function salvarMovimentacao(){
     async function carregarHistorico(){
 
     try{
+
+        let fotosUrls = [];
+
+if(
+    operacaoSelecionada ===
+    "SUBSTITUICAO"
+){
+
+    const arquivos =
+    [...document
+    .getElementById("fotos")
+    .files];
+
+    for(
+        const arquivo
+        of arquivos
+    ){
+
+        const form =
+        new FormData();
+
+        form.append(
+            "arquivo",
+            arquivo
+        );
+
+        const upload =
+        await authFetch(
+
+            `${API}/upload-foto`,
+
+            {
+                method:"POST",
+                body:form
+            }
+
+        );
+
+        const resultado =
+        await upload.json();
+
+        fotosUrls.push(
+            resultado.url
+        );
+
+    }
+
+}
 
         const resp =
         await authFetch(
@@ -1980,6 +2050,44 @@ function selecionarColaborador(col){
         ){
             box.style.display = "none";
         }
+
+    }
+);
+
+    document.addEventListener(
+    "change",
+    function(e){
+
+        if(
+            e.target.id !== "fotos"
+        ){
+            return;
+        }
+
+        const preview =
+        document.getElementById(
+            "previewFotos"
+        );
+
+        preview.innerHTML = "";
+
+        [...e.target.files]
+        .forEach(file => {
+
+            const img =
+            document.createElement("img");
+
+            img.src =
+            URL.createObjectURL(file);
+
+            img.style.width = "120px";
+            img.style.height = "120px";
+            img.style.objectFit = "cover";
+            img.style.borderRadius = "10px";
+
+            preview.appendChild(img);
+
+        });
 
     }
 );
