@@ -460,7 +460,7 @@ td{
     color:#1e40af;
 }
 
-.badge.devolucao{
+.badge.substituicao{
     background:#ffedd5;
     color:#9a3412;
 }
@@ -559,6 +559,25 @@ td{
 input[readonly]{
     background:#f8fafc;
     color:#555;
+}
+    .preview-fotos{
+
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:10px;
+
+}
+
+.preview-fotos img{
+
+    width:140px;
+    height:140px;
+
+    object-fit:cover;
+
+    border-radius:10px;
+
 }
 
 }
@@ -685,7 +704,7 @@ input[readonly]{
                 <div class="opcao" onclick="selecionarModulo(this,'EPI')">
                     <i class="bi bi-shield-check"></i>
                     <h3>EPI</h3>
-                    <p>Entrega e devolução de equipamentos de proteção individual.</p>
+                    <p>Entrega e substituição de equipamentos de proteção individual.</p>
                 </div>
 
                 <div class="opcao" onclick="selecionarModulo(this,'EPC')">
@@ -741,9 +760,9 @@ input[readonly]{
                     <p>Registrar entrega de material para um colaborador.</p>
                 </div>
 
-                <div class="opcao" onclick="selecionarOperacao(this,'DEVOLUCAO')">
+                <div class="opcao" onclick="selecionarOperacao(this,'substituicao')">
                     <i class="bi bi-box-arrow-up"></i>
-                    <h3>Devolução</h3>
+                    <h3>Substituição</h3>
                     <p>Registrar retorno de material ao estoque ou base.</p>
                 </div>
 
@@ -841,7 +860,7 @@ input[readonly]{
                     <select id="filtroTipo">
                         <option value="">Todos</option>
                         <option>ENTREGA</option>
-                        <option>DEVOLUCAO</option>
+                        <option>substituicao</option>
                         <option>TRANSFERENCIA</option>
                     </select>
                 </div>
@@ -894,7 +913,7 @@ input[readonly]{
                         <tr>
                             <td>01/08/2026</td>
                             <td>FERRAMENTAL</td>
-                            <td><span class="badge devolucao">DEVOLUÇÃO</span></td>
+                            <td><span class="badge substituicao">SUBSTITUIÇÃO</span></td>
                             <td>João Silva</td>
                             <td>Detector de Tensão</td>
                             <td>1</td>
@@ -1009,7 +1028,7 @@ function selecionarModulo(card, modulo){
 
     setTexto(
         "subtituloOperacao",
-        "Agora selecione se será entrega, devolução ou transferência."
+        "Agora selecione se será entrega, substituição ou transferência."
     );
 
     el("cardOperacao").style.display = "block";
@@ -1112,8 +1131,8 @@ function montarFormulario(){
         montarEntrega();
     }
 
-    if(operacaoSelecionada === "DEVOLUCAO"){
-        montarDevolucao();
+    if(operacaoSelecionada === "substituicao"){
+        montarsubstituicao();
     }
 
     if(operacaoSelecionada === "TRANSFERENCIA"){
@@ -1133,8 +1152,8 @@ function tituloPorOperacao(){
         return "Registrar Entrega";
     }
 
-    if(operacaoSelecionada === "DEVOLUCAO"){
-        return "Registrar Devolução";
+    if(operacaoSelecionada === "substituicao"){
+        return "Registrar Substituição";
     }
 
     if(operacaoSelecionada === "TRANSFERENCIA"){
@@ -1151,7 +1170,7 @@ function descricaoPorOperacao(){
         return "Informe o colaborador que receberá o material.";
     }
 
-    if(operacaoSelecionada === "DEVOLUCAO"){
+    if(operacaoSelecionada === "substituicao"){
         return "Informe o colaborador e a condição do material devolvido.";
     }
 
@@ -1166,7 +1185,7 @@ function descricaoPorOperacao(){
 function labelOperacao(op){
 
     if(op === "ENTREGA") return "Entrega";
-    if(op === "DEVOLUCAO") return "Devolução";
+    if(op === "substituicao") return "Substituição";
     if(op === "TRANSFERENCIA") return "Transferência";
 
     return op || "";
@@ -1243,7 +1262,7 @@ function montarEntrega(){
 
 }
 
-function montarDevolucao(){
+function montarsubstituicao(){
 
     el("formCampos").innerHTML = `
 
@@ -1290,7 +1309,7 @@ function montarDevolucao(){
         </div>
 
         <div class="campo">
-            <label>Data da devolução</label>
+            <label>Data da Substituição</label>
             <input id="dataMov" type="date">
         </div>
 
@@ -1300,8 +1319,27 @@ function montarDevolucao(){
         </div>
 
         <div class="campo campo-full">
+
+    <label>
+        Evidências da devolução
+    </label>
+
+    <input
+        type="file"
+        id="fotos"
+        multiple
+        accept="image/*">
+
+</div>
+
+<div
+id="previewFotos"
+class="preview-fotos">
+</div>
+
+        <div class="campo campo-full">
             <label>Motivo / Observação</label>
-            <textarea id="observacao" placeholder="Informe o motivo da devolução e detalhes do material."></textarea>
+            <textarea id="observacao" placeholder="Informe o motivo da substituição e detalhes do material."></textarea>
         </div>
 
     `;
@@ -1644,8 +1682,8 @@ function adicionarLinhaHistoricoLocal(dados){
     const classe =
     dados.operacao === "ENTREGA"
     ? "entrega"
-    : dados.operacao === "DEVOLUCAO"
-    ? "devolucao"
+    : dados.operacao === "substituicao"
+    ? "substituicao"
     : "transferencia";
 
     tr.innerHTML = `
