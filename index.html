@@ -580,47 +580,47 @@ input[readonly]{
             <span>Controle de Materiais</span>
         </div>
 
-        <nav class="menu">
+       <nav class="menu">
 
-    index.html
-        <i class="bi bi-grid"></i>
-        Dashboard
-    </a>
+<a href="index.html">
+    <i class="bi bi-grid"></i>
+    Dashboard
+</a>
 
-    equipamentos.html
-        <i class="bi bi-box-seam"></i>
-        Equipamentos
-    </a>
+<a href="equipamentos.html">
+    <i class="bi bi-box-seam"></i>
+    Equipamentos
+</a>
 
-    lap.html
-        <i class="bi bi-shield-check"></i>
-        LAP
-    </a>
+<a href="lap.html">
+    <i class="bi bi-shield-check"></i>
+    LAP
+</a>
 
-    inventarios.html
-        <i class="bi bi-clipboard-data"></i>
-        Inventários
-    </a>
+<a href="inventarios.html">
+    <i class="bi bi-clipboard-data"></i>
+    Inventários
+</a>
 
-    movimentacoes.html
-        <i class="bi bi-arrow-left-right"></i>
-        Movimentações
-    </a>
+<a href="movimentacoes.html" class="ativo">
+    <i class="bi bi-arrow-left-right"></i>
+    Movimentações
+</a>
 
-    colaboradores.html
-        <i class="bi bi-people"></i>
-        Colaboradores
-    </a>
+<a href="colaboradores.html">
+    <i class="bi bi-people"></i>
+    Colaboradores
+</a>
 
-    relatorios.html
-        <i class="bi bi-graph-up"></i>
-        Relatórios
-    </a>
+<a href="relatorios.html">
+    <i class="bi bi-graph-up"></i>
+    Relatórios
+</a>
 
-    configuracoes.html
-        <i class="bi bi-gear"></i>
-        Configurações
-    </a>
+<a href="configuracoes.html">
+    <i class="bi bi-gear"></i>
+    Configurações
+</a>
 
 </nav>
 
@@ -912,7 +912,7 @@ input[readonly]{
 
 </div>
 
-<script src="https://coec-epb.github.io/Controle-de-EPI-EPC-e-Ferramental---DEOP/auth.js"></script>
+<script src="https://coec-epb.github.io/login-Material/auth.js"></script>
 
 <script>
 
@@ -1953,11 +1953,6 @@ function selecionarColaborador(col){
 document.addEventListener(
     "DOMContentLoaded",
     async () => {
-
-        document.getElementById(
-            "dataMov"
-        ).valueAsDate =
-        new Date();
 
         await carregarHistorico();
 
