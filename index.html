@@ -1405,86 +1405,94 @@ function montarTransferencia(){
 
 async function salvarMovimentacao(){
 
+    if(
+        operacaoSelecionada ===
+        "SUBSTITUICAO"
+    ){
+
+        const fotos =
+        document.getElementById(
+            "fotos"
+        )?.files || [];
+
+        if(
+            fotos.length === 0
+        ){
+            alert(
+                "Anexe pelo menos uma foto da substituição."
+            );
+
+            return;
+        }
+
+    }
+
     const dados = {
 
-    categoria:
-    tipoSelecionado,
+        categoria:
+        moduloSelecionado,
 
-    colaborador:
-    document.getElementById("colaborador").value.trim(),
+        colaborador:
+        document.getElementById(
+            "colaborador"
+        ).value.trim(),
 
-    matricula:
-    document.getElementById("matricula").value.trim(),
+        matricula:
+        document.getElementById(
+            "matricula"
+        ).value.trim(),
 
-    equipamento:
-    document.getElementById("equipamento").value.trim(),
+        equipamento:
+        document.getElementById(
+            "equipamento"
+        ).value.trim(),
 
-    quantidade:
-    Number(
-        document.getElementById("quantidade").value
-    ),
+        quantidade:
+        Number(
+            document.getElementById(
+                "quantidade"
+            ).value
+        ),
 
-    operacao:
-    document.getElementById("tipoMov").value.toUpperCase(),
+        operacao:
+        operacaoSelecionada,
 
-    data:
-    document.getElementById("dataMov").value,
+        data:
+        document.getElementById(
+            "dataMov"
+        ).value,
 
-    regional:
-    document.getElementById("regional")?.value || "",
+        regional:
+        document.getElementById(
+            "regional"
+        )?.value || "",
 
-    polo:
-    document.getElementById("polo")?.value || "",
+        polo:
+        document.getElementById(
+            "polo"
+        )?.value || "",
 
-    observacao:
-    document.getElementById("observacao").value.trim()
+        observacao:
+        document.getElementById(
+            "observacao"
+        ).value.trim()
 
-};
-
-    if(!tipoSelecionado){
-
-        alert("Selecione uma categoria.");
-
-        return;
-
-    }
-
-    if(!dados.colaborador){
-
-        alert("Informe o colaborador.");
-
-        return;
-
-    }
-
-    if(!dados.equipamento){
-
-        alert("Informe o equipamento.");
-
-        return;
-
-    }
+    };
 
     try{
 
         const resp =
         await authFetch(
-
             `${API}/movimentacoes`,
-
             {
                 method:"POST",
-
                 headers:{
                     "Content-Type":
                     "application/json"
                 },
-
                 body:
                 JSON.stringify(dados)
-
             }
-
         );
 
         const resultado =
@@ -1509,29 +1517,6 @@ async function salvarMovimentacao(){
         await carregarHistorico();
 
     }
-        if(
-    operacaoSelecionada ===
-    "SUBSTITUIÇÃO"
-){
-
-    const fotos =
-    document.getElementById(
-        "fotos"
-    )?.files || [];
-
-    if(
-        fotos.length === 0
-    ){
-
-        alert(
-            "Anexe pelo menos uma foto da devolução."
-        );
-
-        return;
-
-    }
-}
-
     catch(e){
 
         console.error(e);
