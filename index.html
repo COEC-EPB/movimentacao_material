@@ -518,7 +518,13 @@ td{
     .form-grid{
         grid-template-columns:1fr;
     }
-    .campo-autocomplete{
+
+}
+    /* ==============================
+   AUTOCOMPLETE COLABORADOR
+============================== */
+
+.campo-autocomplete{
     position:relative;
 }
 
@@ -531,7 +537,7 @@ td{
     border:1px solid #ddd;
     border-radius:12px;
     box-shadow:0 8px 20px rgba(0,0,0,.12);
-    z-index:50;
+    z-index:500;
     display:none;
     max-height:260px;
     overflow:auto;
@@ -560,26 +566,24 @@ input[readonly]{
     background:#f8fafc;
     color:#555;
 }
-    .preview-fotos{
 
+/* ==============================
+   PREVIEW DAS FOTOS
+============================== */
+
+.preview-fotos{
     display:flex;
     flex-wrap:wrap;
     gap:10px;
     margin-top:10px;
-
 }
 
 .preview-fotos img{
-
     width:140px;
     height:140px;
-
     object-fit:cover;
-
     border-radius:10px;
-
-}
-
+    border:2px solid #e5e7eb;
 }
 
 </style>
@@ -760,7 +764,7 @@ input[readonly]{
                     <p>Registrar entrega de material para um colaborador.</p>
                 </div>
 
-                <div class="opcao" onclick="selecionarOperacao(this,'substituicao')">
+                <div class="opcao" onclick="selecionarOperacao(this,'SUBSTITUICAO')">
                     <i class="bi bi-box-arrow-up"></i>
                     <h3>Substituição</h3>
                     <p>Registrar retorno de material ao estoque ou base.</p>
@@ -860,7 +864,7 @@ input[readonly]{
                     <select id="filtroTipo">
                         <option value="">Todos</option>
                         <option>ENTREGA</option>
-                        <option>substituicao</option>
+                        <option>SUBSTITUICAO</option>
                         <option>TRANSFERENCIA</option>
                     </select>
                 </div>
@@ -937,37 +941,68 @@ input[readonly]{
 
 let moduloSelecionado = "";
 let operacaoSelecionada = "";
+let timerBuscaColaborador = null;
 
 function el(id){
     return document.getElementById(id);
 }
 
 function setTexto(id, texto){
+
     const elemento = el(id);
+
     if(elemento){
         elemento.innerText = texto || "";
     }
+
 }
 
 function valor(id){
+
     const elemento = el(id);
-    return elemento ? String(elemento.value || "").trim() : "";
+
+    return elemento
+        ? String(elemento.value || "").trim()
+        : "";
+
 }
 
 function hojeISO(){
-    return new Date().toISOString().split("T")[0];
+
+    return new Date()
+    .toISOString()
+    .split("T")[0];
+
 }
 
 function atualizarEtapas(etapa){
 
-    ["etapa1","etapa2","etapa3","etapa4"].forEach(id => {
-        el(id).classList.remove("ativa");
+    ["etapa1","etapa2","etapa3","etapa4"]
+    .forEach(id => {
+
+        const item = el(id);
+
+        if(item){
+            item.classList.remove("ativa");
+        }
+
     });
 
-    if(etapa >= 1) el("etapa1").classList.add("ativa");
-    if(etapa >= 2) el("etapa2").classList.add("ativa");
-    if(etapa >= 3) el("etapa3").classList.add("ativa");
-    if(etapa >= 4) el("etapa4").classList.add("ativa");
+    if(etapa >= 1 && el("etapa1")){
+        el("etapa1").classList.add("ativa");
+    }
+
+    if(etapa >= 2 && el("etapa2")){
+        el("etapa2").classList.add("ativa");
+    }
+
+    if(etapa >= 3 && el("etapa3")){
+        el("etapa3").classList.add("ativa");
+    }
+
+    if(etapa >= 4 && el("etapa4")){
+        el("etapa4").classList.add("ativa");
+    }
 
 }
 
@@ -980,9 +1015,11 @@ function carregarUsuario(){
     let usuario = null;
 
     try{
+
         if(typeof getUser === "function"){
             usuario = getUser();
         }
+
     }catch(e){
         usuario = null;
     }
@@ -990,23 +1027,28 @@ function carregarUsuario(){
     usuario = usuario || {};
 
     const nome =
-    usuario.nome ||
-    usuario.lider ||
-    "Usuário";
+        usuario.nome ||
+        usuario.lider ||
+        "Usuário";
 
     const perfil =
-    usuario.perfil ||
-    (
-        usuario.isAdmin
-        ? "Administrador"
-        : "Usuário"
-    );
+        usuario.perfil ||
+        (
+            usuario.isAdmin
+            ? "Administrador"
+            : "Usuário"
+        );
 
-    setTexto("nomeUsuario", nome);
+    setTexto(
+        "nomeUsuario",
+        nome
+    );
 
     setTexto(
         "perfilUsuario",
-        perfil === "admin" ? "Administrador" : perfil
+        perfil === "admin"
+        ? "Administrador"
+        : perfil
     );
 
 }
@@ -1017,14 +1059,18 @@ function carregarUsuario(){
 
 function selecionarModulo(card, modulo){
 
-    document.querySelectorAll("#cardModulo .opcao")
+    document
+    .querySelectorAll("#cardModulo .opcao")
     .forEach(item => item.classList.remove("ativa"));
 
     card.classList.add("ativa");
 
     moduloSelecionado = modulo;
 
-    setTexto("tituloOperacao", "Movimentação de " + modulo);
+    setTexto(
+        "tituloOperacao",
+        "Movimentação de " + modulo
+    );
 
     setTexto(
         "subtituloOperacao",
@@ -1038,15 +1084,16 @@ function selecionarModulo(card, modulo){
     atualizarEtapas(2);
 
     window.scrollTo({
-        top:el("cardOperacao").offsetTop - 20,
-        behavior:"smooth"
+        top: el("cardOperacao").offsetTop - 20,
+        behavior: "smooth"
     });
 
 }
 
 function selecionarOperacao(card, operacao){
 
-    document.querySelectorAll("#cardOperacao .opcao")
+    document
+    .querySelectorAll("#cardOperacao .opcao")
     .forEach(item => item.classList.remove("ativa"));
 
     card.classList.add("ativa");
@@ -1060,8 +1107,8 @@ function selecionarOperacao(card, operacao){
     atualizarEtapas(3);
 
     window.scrollTo({
-        top:el("cardFormulario").offsetTop - 20,
-        behavior:"smooth"
+        top: el("cardFormulario").offsetTop - 20,
+        behavior: "smooth"
     });
 
 }
@@ -1071,7 +1118,8 @@ function voltarModulo(){
     moduloSelecionado = "";
     operacaoSelecionada = "";
 
-    document.querySelectorAll(".opcao")
+    document
+    .querySelectorAll(".opcao")
     .forEach(item => item.classList.remove("ativa"));
 
     el("cardOperacao").style.display = "none";
@@ -1080,8 +1128,8 @@ function voltarModulo(){
     atualizarEtapas(1);
 
     window.scrollTo({
-        top:0,
-        behavior:"smooth"
+        top: 0,
+        behavior: "smooth"
     });
 
 }
@@ -1090,7 +1138,8 @@ function voltarOperacao(){
 
     operacaoSelecionada = "";
 
-    document.querySelectorAll("#cardOperacao .opcao")
+    document
+    .querySelectorAll("#cardOperacao .opcao")
     .forEach(item => item.classList.remove("ativa"));
 
     el("cardFormulario").style.display = "none";
@@ -1102,6 +1151,7 @@ function voltarOperacao(){
 function cancelarTudo(){
 
     limparFormulario();
+
     voltarModulo();
 
 }
@@ -1122,17 +1172,18 @@ function montarFormulario(){
         descricaoPorOperacao()
     );
 
-    el("resumoEscolha").innerHTML =
-    `<strong>Módulo:</strong> ${moduloSelecionado}
-     &nbsp; | &nbsp;
-     <strong>Operação:</strong> ${labelOperacao(operacaoSelecionada)}`;
+    el("resumoEscolha").innerHTML = `
+        <strong>Módulo:</strong> ${moduloSelecionado}
+        &nbsp; | &nbsp;
+        <strong>Operação:</strong> ${labelOperacao(operacaoSelecionada)}
+    `;
 
     if(operacaoSelecionada === "ENTREGA"){
         montarEntrega();
     }
 
-    if(operacaoSelecionada === "substituicao"){
-        montarsubstituicao();
+    if(operacaoSelecionada === "SUBSTITUICAO"){
+        montarSubstituicao();
     }
 
     if(operacaoSelecionada === "TRANSFERENCIA"){
@@ -1140,6 +1191,7 @@ function montarFormulario(){
     }
 
     const data = el("dataMov");
+
     if(data){
         data.value = hojeISO();
     }
@@ -1152,7 +1204,7 @@ function tituloPorOperacao(){
         return "Registrar Entrega";
     }
 
-    if(operacaoSelecionada === "substituicao"){
+    if(operacaoSelecionada === "SUBSTITUICAO"){
         return "Registrar Substituição";
     }
 
@@ -1170,8 +1222,8 @@ function descricaoPorOperacao(){
         return "Informe o colaborador que receberá o material.";
     }
 
-    if(operacaoSelecionada === "substituicao"){
-        return "Informe o colaborador e a condição do material devolvido.";
+    if(operacaoSelecionada === "SUBSTITUICAO"){
+        return "Informe o colaborador, a condição do material devolvido e anexe evidências.";
     }
 
     if(operacaoSelecionada === "TRANSFERENCIA"){
@@ -1184,44 +1236,69 @@ function descricaoPorOperacao(){
 
 function labelOperacao(op){
 
-    if(op === "ENTREGA") return "Entrega";
-    if(op === "substituicao") return "Substituição";
-    if(op === "TRANSFERENCIA") return "Transferência";
+    if(op === "ENTREGA"){
+        return "Entrega";
+    }
+
+    if(op === "SUBSTITUICAO"){
+        return "Substituição";
+    }
+
+    if(op === "TRANSFERENCIA"){
+        return "Transferência";
+    }
 
     return op || "";
 
 }
 
+/* ==============================
+   BLOCO PADRÃO COLABORADOR
+============================== */
+
+function campoColaboradorHTML(titulo){
+
+    return `
+        <div class="campo campo-autocomplete">
+
+            <label>${titulo}</label>
+
+            <input
+                id="colaborador"
+                placeholder="Digite nome ou matrícula"
+                autocomplete="off"
+                oninput="buscarColaboradorInteligente()">
+
+            <div
+                id="sugestoesColaboradores"
+                class="sugestoes">
+            </div>
+
+        </div>
+
+        <div class="campo">
+
+            <label>Matrícula</label>
+
+            <input
+                id="matricula"
+                placeholder="Matrícula"
+                readonly>
+
+        </div>
+    `;
+
+}
+
+/* ==============================
+   FORM ENTREGA
+============================== */
+
 function montarEntrega(){
 
     el("formCampos").innerHTML = `
 
-        <div class="campo">
-            <label>Colaborador que recebeu</label>
-            <div class="campo campo-autocomplete">
-
-    <label>
-        Colaborador
-    </label>
-
-    <input
-    id="colaborador"
-    placeholder="Digite nome ou matrícula"
-    autocomplete="off"
-    oninput="buscarColaboradorInteligente()">
-
-    <div
-    id="sugestoesColaboradores"
-    class="sugestoes">
-    </div>
-
-</div>
-        </div>
-
-        <div class="campo">
-            <label>Matrícula</label>
-            <input id="matricula" placeholder="Matrícula">
-        </div>
+        ${campoColaboradorHTML("Colaborador que recebeu")}
 
         <div class="campo">
             <label>Material / Equipamento</label>
@@ -1235,12 +1312,12 @@ function montarEntrega(){
 
         <div class="campo">
             <label>Regional</label>
-            <input id="regional" placeholder="Ex.: DEOP-L">
+            <input id="regional" placeholder="Ex.: DEOP-L" readonly>
         </div>
 
         <div class="campo">
             <label>Polo / Base</label>
-            <input id="polo" placeholder="Ex.: Cajazeiras">
+            <input id="polo" placeholder="Ex.: Cajazeiras" readonly>
         </div>
 
         <div class="campo">
@@ -1255,26 +1332,24 @@ function montarEntrega(){
 
         <div class="campo campo-full">
             <label>Observação</label>
-            <textarea id="observacao" placeholder="Detalhes adicionais, CA, condição, validade etc."></textarea>
+            <textarea
+                id="observacao"
+                placeholder="Detalhes adicionais, CA, condição, validade etc."></textarea>
         </div>
 
     `;
 
 }
 
-function montarsubstituicao(){
+/* ==============================
+   FORM SUBSTITUIÇÃO
+============================== */
+
+function montarSubstituicao(){
 
     el("formCampos").innerHTML = `
 
-        <div class="campo">
-            <label>Colaborador que devolveu</label>
-            <input id="colaborador" placeholder="Nome do colaborador">
-        </div>
-
-        <div class="campo">
-            <label>Matrícula</label>
-            <input id="matricula" placeholder="Matrícula">
-        </div>
+        ${campoColaboradorHTML("Colaborador que devolveu")}
 
         <div class="campo">
             <label>Material / Equipamento</label>
@@ -1287,7 +1362,17 @@ function montarsubstituicao(){
         </div>
 
         <div class="campo">
-            <label>Estado do material</label>
+            <label>Regional</label>
+            <input id="regional" placeholder="Ex.: DEOP-L" readonly>
+        </div>
+
+        <div class="campo">
+            <label>Polo / Base</label>
+            <input id="polo" placeholder="Ex.: Cajazeiras" readonly>
+        </div>
+
+        <div class="campo">
+            <label>Estado do material devolvido</label>
             <select id="estadoMaterial">
                 <option value="">Selecione</option>
                 <option>Bom estado</option>
@@ -1299,7 +1384,7 @@ function montarsubstituicao(){
         </div>
 
         <div class="campo">
-            <label>Destino</label>
+            <label>Destino do material devolvido</label>
             <select id="destino">
                 <option>Estoque</option>
                 <option>Descarte</option>
@@ -1309,7 +1394,7 @@ function montarsubstituicao(){
         </div>
 
         <div class="campo">
-            <label>Data da Substituição</label>
+            <label>Data da substituição</label>
             <input id="dataMov" type="date">
         </div>
 
@@ -1320,31 +1405,35 @@ function montarsubstituicao(){
 
         <div class="campo campo-full">
 
-    <label>
-        Evidências da devolução
-    </label>
+            <label>Evidências da devolução</label>
 
-    <input
-        type="file"
-        id="fotos"
-        multiple
-        accept="image/*">
+            <input
+                type="file"
+                id="fotos"
+                multiple
+                accept="image/*">
 
-</div>
+            <div
+                id="previewFotos"
+                class="preview-fotos">
+            </div>
 
-<div
-id="previewFotos"
-class="preview-fotos">
-</div>
+        </div>
 
         <div class="campo campo-full">
             <label>Motivo / Observação</label>
-            <textarea id="observacao" placeholder="Informe o motivo da substituição e detalhes do material."></textarea>
+            <textarea
+                id="observacao"
+                placeholder="Informe o motivo da substituição e detalhes do material."></textarea>
         </div>
 
     `;
 
 }
+
+/* ==============================
+   FORM TRANSFERÊNCIA
+============================== */
 
 function montarTransferencia(){
 
@@ -1392,7 +1481,9 @@ function montarTransferencia(){
 
         <div class="campo campo-full">
             <label>Observação</label>
-            <textarea id="observacao" placeholder="Informe detalhes da transferência."></textarea>
+            <textarea
+                id="observacao"
+                placeholder="Informe detalhes da transferência."></textarea>
         </div>
 
     `;
@@ -1405,98 +1496,117 @@ function montarTransferencia(){
 
 async function salvarMovimentacao(){
 
+    if(!moduloSelecionado){
+        alert("Selecione uma categoria.");
+        return;
+    }
+
+    if(!operacaoSelecionada){
+        alert("Selecione uma operação.");
+        return;
+    }
+
+    if(!valor("equipamento")){
+        alert("Informe o material ou equipamento.");
+        return;
+    }
+
+    if(!valor("quantidade") || Number(valor("quantidade")) <= 0){
+        alert("Informe uma quantidade válida.");
+        return;
+    }
+
     if(
-        operacaoSelecionada ===
-        "SUBSTITUICAO"
+        operacaoSelecionada === "ENTREGA" ||
+        operacaoSelecionada === "SUBSTITUICAO"
     ){
 
-        const fotos =
-        document.getElementById(
-            "fotos"
-        )?.files || [];
-
-        if(
-            fotos.length === 0
-        ){
-            alert(
-                "Anexe pelo menos uma foto da substituição."
-            );
-
+        if(!valor("colaborador")){
+            alert("Informe o colaborador.");
             return;
         }
 
     }
 
-    const dados = {
+    if(operacaoSelecionada === "TRANSFERENCIA"){
 
-        categoria:
-        moduloSelecionado,
+        if(!valor("origem") || !valor("destino")){
+            alert("Informe origem e destino.");
+            return;
+        }
 
-        colaborador:
-        document.getElementById(
-            "colaborador"
-        ).value.trim(),
+    }
 
-        matricula:
-        document.getElementById(
-            "matricula"
-        ).value.trim(),
-
-        equipamento:
-        document.getElementById(
-            "equipamento"
-        ).value.trim(),
-
-        quantidade:
-        Number(
-            document.getElementById(
-                "quantidade"
-            ).value
-        ),
-
-        operacao:
-        operacaoSelecionada,
-
-        data:
-        document.getElementById(
-            "dataMov"
-        ).value,
-
-        regional:
-        document.getElementById(
-            "regional"
-        )?.value || "",
-
-        polo:
-        document.getElementById(
-            "polo"
-        )?.value || "",
-
-        observacao:
-        document.getElementById(
-            "observacao"
-        ).value.trim()
-
-    };
+    let fotosUrls = [];
 
     try{
 
-        const resp =
-        await authFetch(
+        if(operacaoSelecionada === "SUBSTITUICAO"){
+
+            const inputFotos = el("fotos");
+            const arquivos = inputFotos ? [...inputFotos.files] : [];
+
+            if(arquivos.length === 0){
+
+                alert("Anexe pelo menos uma foto da substituição.");
+                return;
+
+            }
+
+            for(const arquivo of arquivos){
+
+                const form = new FormData();
+
+                form.append(
+                    "arquivo",
+                    arquivo
+                );
+
+                const upload = await authFetch(
+                    `${API}/upload-foto`,
+                    {
+                        method:"POST",
+                        body:form
+                    }
+                );
+
+                const resultadoUpload = await upload.json();
+
+                if(
+                    !upload.ok ||
+                    resultadoUpload.sucesso === false
+                ){
+                    throw new Error(
+                        resultadoUpload.mensagem ||
+                        resultadoUpload.erro ||
+                        "Erro ao enviar foto."
+                    );
+                }
+
+                fotosUrls.push(
+                    resultadoUpload.url
+                );
+
+            }
+
+        }
+
+        const dados = coletarDadosFormulario();
+
+        dados.fotos = fotosUrls;
+
+        const resp = await authFetch(
             `${API}/movimentacoes`,
             {
                 method:"POST",
                 headers:{
-                    "Content-Type":
-                    "application/json"
+                    "Content-Type":"application/json"
                 },
-                body:
-                JSON.stringify(dados)
+                body:JSON.stringify(dados)
             }
         );
 
-        const resultado =
-        await resp.json();
+        const resultado = await resp.json();
 
         if(
             !resp.ok ||
@@ -1504,149 +1614,28 @@ async function salvarMovimentacao(){
         ){
             throw new Error(
                 resultado.mensagem ||
-                "Erro ao salvar."
+                resultado.erro ||
+                "Erro ao salvar movimentação."
             );
         }
 
-        alert(
-            "✅ Movimentação registrada com sucesso."
-        );
+        alert("✅ Movimentação registrada com sucesso.");
+
+        adicionarLinhaHistoricoLocal(dados);
 
         limparFormulario();
 
         await carregarHistorico();
 
-    }
-    catch(e){
+        atualizarEtapas(4);
+
+    }catch(e){
 
         console.error(e);
 
         alert(
             "❌ " + e.message
         );
-
-    }
-
-}
-    async function carregarHistorico(){
-
-    try{
-
-        let fotosUrls = [];
-
-if(
-    operacaoSelecionada ===
-    "SUBSTITUICAO"
-){
-
-    const arquivos =
-    [...document
-    .getElementById("fotos")
-    .files];
-
-    for(
-        const arquivo
-        of arquivos
-    ){
-
-        const form =
-        new FormData();
-
-        form.append(
-            "arquivo",
-            arquivo
-        );
-
-        const upload =
-        await authFetch(
-
-            `${API}/upload-foto`,
-
-            {
-                method:"POST",
-                body:form
-            }
-
-        );
-
-        const resultado =
-        await upload.json();
-
-        fotosUrls.push(
-            resultado.url
-        );
-
-    }
-
-}
-
-        const resp =
-        await authFetch(
-            `${API}/movimentacoes`
-        );
-
-        const dados =
-        await resp.json();
-
-        const lista =
-        dados.dados || [];
-
-        const tbody =
-        document.querySelector(
-            "#historicoMov tbody"
-        );
-
-        tbody.innerHTML = "";
-
-        lista.forEach(item => {
-
-            tbody.innerHTML += `
-                <tr>
-
-                    <td>
-                        ${
-                            item.data_movimentacao || ""
-                        }
-                    </td>
-
-                    <td>
-                        ${
-                            item.colaborador || ""
-                        }
-                    </td>
-
-                    <td>
-                        ${
-                            item.equipamento || ""
-                        }
-                    </td>
-
-                    <td>
-                        ${
-                            item.operacao || ""
-                        }
-                    </td>
-
-                    <td>
-
-                        <span class="badge">
-
-                            Concluído
-
-                        </span>
-
-                    </td>
-
-                </tr>
-            `;
-
-        });
-
-    }
-
-    catch(e){
-
-        console.error(e);
 
     }
 
@@ -1666,7 +1655,7 @@ function coletarDadosFormulario(){
 
         equipamento:valor("equipamento"),
 
-        quantidade:valor("quantidade"),
+        quantidade:Number(valor("quantidade") || 1),
 
         regional:valor("regional"),
 
@@ -1692,9 +1681,16 @@ function coletarDadosFormulario(){
 
 function limparFormulario(){
 
+    const formCampos = el("formCampos");
+
+    if(!formCampos){
+        return;
+    }
+
     const campos =
-    el("formCampos")
-    .querySelectorAll("input, select, textarea");
+    formCampos.querySelectorAll(
+        "input, select, textarea"
+    );
 
     campos.forEach(campo => {
 
@@ -1706,23 +1702,123 @@ function limparFormulario(){
             campo.value = hojeISO();
         }
 
+        else if(campo.type === "file"){
+            campo.value = "";
+        }
+
         else{
             campo.value = "";
         }
 
     });
 
+    const preview = el("previewFotos");
+
+    if(preview){
+        preview.innerHTML = "";
+    }
+
+}
+
+/* ==============================
+   HISTÓRICO
+============================== */
+
+async function carregarHistorico(){
+
+    try{
+
+        if(
+            typeof authFetch !== "function" ||
+            typeof API === "undefined"
+        ){
+            return;
+        }
+
+        const resp =
+        await authFetch(
+            `${API}/movimentacoes`
+        );
+
+        if(!resp.ok){
+            return;
+        }
+
+        const dados =
+        await resp.json();
+
+        const lista =
+        dados.dados || [];
+
+        const tbody =
+        el("tbodyHistorico");
+
+        if(!tbody){
+            return;
+        }
+
+        tbody.innerHTML = "";
+
+        lista.forEach(item => {
+
+            const classe =
+            item.operacao === "ENTREGA"
+            ? "entrega"
+            : item.operacao === "SUBSTITUICAO"
+            ? "substituicao"
+            : "transferencia";
+
+            const data =
+            item.data_movimentacao ||
+            item.data ||
+            "";
+
+            const pessoa =
+            item.colaborador ||
+            item.origem ||
+            "-";
+
+            tbody.innerHTML += `
+                <tr>
+                    <td>${data}</td>
+                    <td>${item.categoria || ""}</td>
+                    <td>
+                        <span class="badge ${classe}">
+                            ${item.operacao || ""}
+                        </span>
+                    </td>
+                    <td>${pessoa}</td>
+                    <td>${item.equipamento || ""}</td>
+                    <td>${item.quantidade || ""}</td>
+                    <td>
+                        <span class="badge ok">
+                            Concluído
+                        </span>
+                    </td>
+                </tr>
+            `;
+
+        });
+
+    }catch(e){
+
+        console.error(e);
+
+    }
+
 }
 
 function adicionarLinhaHistoricoLocal(dados){
 
-    const tbody = el("tbodyHistorico");
+    const tbody =
+    el("tbodyHistorico");
 
     if(!tbody){
         return;
     }
 
-    const tr = document.createElement("tr");
+    const tr =
+    document.createElement("tr");
 
     const dataFormatada =
     dados.data
@@ -1737,18 +1833,26 @@ function adicionarLinhaHistoricoLocal(dados){
     const classe =
     dados.operacao === "ENTREGA"
     ? "entrega"
-    : dados.operacao === "substituicao"
+    : dados.operacao === "SUBSTITUICAO"
     ? "substituicao"
     : "transferencia";
 
     tr.innerHTML = `
         <td>${dataFormatada}</td>
         <td>${dados.categoria}</td>
-        <td><span class="badge ${classe}">${dados.operacao}</span></td>
+        <td>
+            <span class="badge ${classe}">
+                ${dados.operacao}
+            </span>
+        </td>
         <td>${pessoaOrigem}</td>
         <td>${dados.equipamento}</td>
         <td>${dados.quantidade}</td>
-        <td><span class="badge ok">Concluído</span></td>
+        <td>
+            <span class="badge ok">
+                Concluído
+            </span>
+        </td>
     `;
 
     tbody.prepend(tr);
@@ -1787,10 +1891,10 @@ function filtrarHistorico(){
     valor("pesquisaHistorico").toLowerCase();
 
     const categoria =
-    valor("filtroCategoria");
+    valor("filtroCategoria").toLowerCase();
 
     const tipo =
-    valor("filtroTipo");
+    valor("filtroTipo").toLowerCase();
 
     const data =
     valor("filtroData");
@@ -1807,21 +1911,28 @@ function filtrarHistorico(){
         !pesquisa || textoLinha.includes(pesquisa);
 
         const okCategoria =
-        !categoria || textoLinha.includes(categoria.toLowerCase());
+        !categoria || textoLinha.includes(categoria);
 
         const okTipo =
-        !tipo || textoLinha.includes(tipo.toLowerCase());
+        !tipo || textoLinha.includes(tipo);
 
         let okData = true;
 
         if(data){
+
             const dataBR =
             data.split("-").reverse().join("/");
-            okData = textoLinha.includes(dataBR);
+
+            okData =
+            textoLinha.includes(dataBR);
+
         }
 
         linha.style.display =
-        okPesquisa && okCategoria && okTipo && okData
+        okPesquisa &&
+        okCategoria &&
+        okTipo &&
+        okData
         ? ""
         : "none";
 
@@ -1839,7 +1950,10 @@ function limparFiltrosHistorico(){
     filtrarHistorico();
 
 }
-    let timerBuscaColaborador = null;
+
+/* ==============================
+   AUTOCOMPLETE COLABORADOR
+============================== */
 
 async function buscarColaboradorInteligente(){
 
@@ -1852,17 +1966,17 @@ async function buscarColaboradorInteligente(){
         async () => {
 
             const campo =
-            document.getElementById(
-                "colaborador"
-            );
+            el("colaborador");
+
+            const box =
+            el("sugestoesColaboradores");
+
+            if(!campo || !box){
+                return;
+            }
 
             const texto =
             campo.value.trim();
-
-            const box =
-            document.getElementById(
-                "sugestoesColaboradores"
-            );
 
             if(!texto || texto.length < 2){
 
@@ -1890,9 +2004,7 @@ async function buscarColaboradorInteligente(){
                     lista
                 );
 
-            }
-
-            catch(e){
+            }catch(e){
 
                 console.error(
                     "Erro ao buscar colaborador:",
@@ -1907,13 +2019,14 @@ async function buscarColaboradorInteligente(){
 
 }
 
-
 function renderSugestoesColaboradores(lista){
 
     const box =
-    document.getElementById(
-        "sugestoesColaboradores"
-    );
+    el("sugestoesColaboradores");
+
+    if(!box){
+        return;
+    }
 
     if(!lista.length){
 
@@ -1934,10 +2047,14 @@ function renderSugestoesColaboradores(lista){
     box.innerHTML =
     lista.map(col => {
 
+        const colJson =
+        JSON.stringify(col)
+        .replace(/'/g, "&apos;");
+
         return `
             <div
-            class="sugestao-item"
-            onclick='selecionarColaborador(${JSON.stringify(col)})'>
+                class="sugestao-item"
+                onclick='selecionarColaborador(${colJson})'>
 
                 <strong>
                     ${col.nome || ""}
@@ -1945,16 +2062,8 @@ function renderSugestoesColaboradores(lista){
 
                 <small>
                     Matrícula: ${col.matricula || "-"}
-                    ${
-                        col.regional
-                        ? " | " + col.regional
-                        : ""
-                    }
-                    ${
-                        col.polo
-                        ? " | " + col.polo
-                        : ""
-                    }
+                    ${col.regional ? " | " + col.regional : ""}
+                    ${col.polo ? " | " + col.polo : ""}
                 </small>
 
             </div>
@@ -1962,70 +2071,57 @@ function renderSugestoesColaboradores(lista){
 
     }).join("");
 
-    box.style.display =
-    "block";
+    box.style.display = "block";
 
 }
 
-
 function selecionarColaborador(col){
 
-    document.getElementById(
-        "colaborador"
-    ).value =
-    col.nome || "";
+    if(el("colaborador")){
+        el("colaborador").value =
+        col.nome || "";
+    }
 
-    document.getElementById(
-        "matricula"
-    ).value =
-    col.matricula || "";
+    if(el("matricula")){
+        el("matricula").value =
+        col.matricula || "";
+    }
 
-    if(
-        document.getElementById("regional")
-    ){
-        document.getElementById(
-            "regional"
-        ).value =
+    if(el("regional")){
+        el("regional").value =
         col.regional || "";
     }
 
-    if(
-        document.getElementById("polo")
-    ){
-        document.getElementById(
-            "polo"
-        ).value =
+    if(el("polo")){
+        el("polo").value =
         col.polo || "";
     }
 
     const box =
-    document.getElementById(
-        "sugestoesColaboradores"
-    );
+    el("sugestoesColaboradores");
 
-    box.innerHTML = "";
-    box.style.display = "none";
+    if(box){
+        box.innerHTML = "";
+        box.style.display = "none";
+    }
 
 }
 
-    document.addEventListener(
+/* ==============================
+   EVENTOS GERAIS
+============================== */
+
+document.addEventListener(
     "click",
     function(event){
 
         const box =
-        document.getElementById(
-            "sugestoesColaboradores"
-        );
+        el("sugestoesColaboradores");
 
         const campo =
-        document.getElementById(
-            "colaborador"
-        );
+        el("colaborador");
 
-        if(
-            !box ||
-            !campo
-        ){
+        if(!box || !campo){
             return;
         }
 
@@ -2039,20 +2135,20 @@ function selecionarColaborador(col){
     }
 );
 
-    document.addEventListener(
+document.addEventListener(
     "change",
     function(e){
 
-        if(
-            e.target.id !== "fotos"
-        ){
+        if(e.target.id !== "fotos"){
             return;
         }
 
         const preview =
-        document.getElementById(
-            "previewFotos"
-        );
+        el("previewFotos");
+
+        if(!preview){
+            return;
+        }
 
         preview.innerHTML = "";
 
@@ -2064,11 +2160,6 @@ function selecionarColaborador(col){
 
             img.src =
             URL.createObjectURL(file);
-
-            img.style.width = "120px";
-            img.style.height = "120px";
-            img.style.objectFit = "cover";
-            img.style.borderRadius = "10px";
 
             preview.appendChild(img);
 
@@ -2085,13 +2176,15 @@ document.addEventListener(
     "DOMContentLoaded",
     async () => {
 
+        carregarUsuario();
+
+        atualizarEtapas(1);
+
         await carregarHistorico();
 
     }
 );
 
 </script>
-
 </body>
-
 </html>
