@@ -1592,7 +1592,15 @@ async function salvarMovimentacao(){
         }
 
         const dados = coletarDadosFormulario();
+        console.log(
+   "FOTOS ENVIADAS",
+   fotosUrls
+);
 
+        console.log(
+   "DADOS COMPLETOS",
+   dados
+);
         dados.fotos = fotosUrls;
 
         const resp = await authFetch(
