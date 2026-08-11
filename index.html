@@ -1583,9 +1583,22 @@ async function salvarMovimentacao(){
                     );
                 }
 
-                fotosUrls.push(
-                    resultadoUpload.url
-                );
+                if(!resultadoUpload.url){
+
+    console.error(
+        "Resposta do upload sem URL:",
+        resultadoUpload
+    );
+
+    throw new Error(
+        "Upload realizado, mas a URL da foto não foi retornada pelo Worker."
+    );
+
+}
+
+fotosUrls.push(
+    resultadoUpload.url
+);
 
             }
 
