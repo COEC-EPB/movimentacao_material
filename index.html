@@ -1316,9 +1316,14 @@ function montarEntrega(){
         </div>
 
         <div class="campo">
-            <label>Polo / Base</label>
-            <input id="polo" placeholder="Ex.: Cajazeiras" readonly>
-        </div>
+    <label>Polo</label>
+    <input id="polo" readonly>
+</div>
+
+<div class="campo">
+    <label>Base</label>
+    <input id="base" readonly>
+</div>
 
         <div class="campo">
             <label>Data da entrega</label>
@@ -2114,9 +2119,14 @@ function selecionarColaborador(col){
     }
 
     if(el("polo")){
-        el("polo").value =
-        col.polo || "";
-    }
+    el("polo").value =
+    col.polo || "";
+}
+
+if(el("base")){
+    el("base").value =
+    col.base || "";
+}
 
     const box =
     el("sugestoesColaboradores");
