@@ -1144,6 +1144,59 @@ function valor(id){
 
 }
 
+    function escaparHTMLLocal(valor){
+
+    return String(valor ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#39;");
+
+}
+    async function visualizarFoto(url){
+
+    window.open(
+        url,
+        "_blank"
+    );
+
+}
+
+async function baixarFoto(url){
+
+    const link =
+    document.createElement("a");
+
+    link.href = url;
+
+    link.download = "";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+}
+
+    function limparReferenciaFoto(valor){
+
+    return String(valor || "")
+        .trim()
+        .replace(/^["']|["']$/g,"");
+
+}
+
+function escaparAtributo(valor){
+
+    return String(valor ?? "")
+        .replace(/\\/g,"\\\\")
+        .replace(/'/g,"\\'")
+        .replace(/"/g,"&quot;");
+
+}
+
 function hojeISO(){
 
     return new Date()
@@ -1188,7 +1241,7 @@ function atualizarEtapas(etapa){
 ============================== */
 
 function carregarUsuario(){
-    let usuarioLogado = {};
+    usuarioLogado = {};
     let usuario = null;
 
     try{
@@ -2195,15 +2248,16 @@ function adicionarLinhaHistoricoLocal(dados){
 function abrirConsulta(){
 
     el("historicoMov").style.display = "block";
+
     el("cardOperacao").style.display = "none";
+
     el("cardFormulario").style.display = "none";
 
-    atualizarEtapas(4);
-
-    window.scrollTo({
-        top:el("historicoMov").offsetTop - 20,
-        behavior:"smooth"
+    carregarHistorico({
+        limite:10
     });
+
+    atualizarEtapas(4);
 
 }
 
