@@ -1200,19 +1200,14 @@ function montarFormulario(){
     const data = el("dataMov");
 
     if(data){
-        data.value = hojeISO();
-    }
-    if(
-    usuarioLogado &&
-    el("responsavel")
-){
-
-    el("responsavel").value =
-        usuarioLogado.nome ||
-        usuarioLogado.lider ||
-        "";
-
+    data.value = hojeISO();
 }
+
+setTimeout(() => {
+
+    preencherResponsavelLogado();
+
+}, 50);
 
 }
 
@@ -1350,7 +1345,9 @@ function montarEntrega(){
 
         <div class="campo">
             <label>Responsável pela entrega</label>
-            <input id="responsavel" placeholder="Nome do responsável">
+            <input
+    id="responsavel"
+    readonly>
         </div>
 
         <div class="campo campo-full">
@@ -1456,6 +1453,33 @@ function montarSubstituicao(){
         </div>
 
     `;
+    setTimeout(() => {
+
+    const usuario =
+    getUser?.() || {};
+
+    if(el("responsavel")){
+
+        el("responsavel").value =
+            usuario.nome || "";
+
+    }
+
+}, 50);
+
+}
+
+function preencherResponsavelLogado(){
+
+    const usuario =
+    getUser?.() || {};
+
+    if(el("responsavel")){
+
+        el("responsavel").value =
+            usuario.nome || "";
+
+    }
 
 }
 
