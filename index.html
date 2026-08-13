@@ -1011,7 +1011,7 @@ function atualizarEtapas(etapa){
 ============================== */
 
 function carregarUsuario(){
-
+    let usuarioLogado = {};
     let usuario = null;
 
     try{
@@ -1025,6 +1025,8 @@ function carregarUsuario(){
     }
 
     usuario = usuario || {};
+
+    usuarioLogado = usuario;;
 
     const nome =
         usuario.nome ||
@@ -1195,6 +1197,17 @@ function montarFormulario(){
     if(data){
         data.value = hojeISO();
     }
+    if(
+    usuarioLogado &&
+    el("responsavel")
+){
+
+    el("responsavel").value =
+        usuarioLogado.nome ||
+        usuarioLogado.lider ||
+        "";
+
+}
 
 }
 
@@ -1372,9 +1385,14 @@ function montarSubstituicao(){
         </div>
 
         <div class="campo">
-            <label>Polo / Base</label>
-            <input id="polo" placeholder="Ex.: Cajazeiras" readonly>
-        </div>
+    <label>Polo</label>
+    <input id="polo" readonly>
+    </div>
+    
+    <div class="campo">
+        <label>Base</label>
+        <input id="base" readonly>
+    </div>
 
         <div class="campo">
             <label>Estado do material devolvido</label>
@@ -1686,6 +1704,8 @@ function coletarDadosFormulario(){
         regional:valor("regional"),
 
         polo:valor("polo"),
+
+        base:valor("base"),
 
         origem:valor("origem"),
 
