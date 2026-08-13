@@ -585,6 +585,164 @@ input[readonly]{
     border-radius:10px;
     border:2px solid #e5e7eb;
 }
+    /* ==============================
+   MODAL DETALHE MOVIMENTAÇÃO
+============================== */
+
+.modal-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    z-index:9999;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.modal-detalhe{
+    width:920px;
+    max-width:96vw;
+    max-height:92vh;
+    overflow:auto;
+    background:#fff;
+    border-radius:22px;
+    padding:24px;
+    box-shadow:0 25px 60px rgba(0,0,0,.28);
+}
+
+.modal-detalhe-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:15px;
+    margin-bottom:20px;
+    border-bottom:1px solid #e5e7eb;
+    padding-bottom:14px;
+}
+
+.modal-detalhe-header h2{
+    font-size:24px;
+    color:#111827;
+}
+
+.modal-detalhe-header small{
+    color:#6b7280;
+}
+
+.fechar-modal-detalhe{
+    border:none;
+    background:#f1f5f9;
+    color:#111827;
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    font-size:26px;
+    cursor:pointer;
+}
+
+.fechar-modal-detalhe:hover{
+    background:#e5e7eb;
+}
+
+.detalhe-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+}
+
+.detalhe-item{
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    padding:12px;
+}
+
+.detalhe-item strong{
+    display:block;
+    color:#374151;
+    font-size:13px;
+    margin-bottom:4px;
+}
+
+.detalhe-item span{
+    color:#111827;
+    font-size:15px;
+}
+
+.detalhe-full{
+    grid-column:1 / -1;
+}
+
+.fotos-detalhe{
+    margin-top:18px;
+}
+
+.foto-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:10px;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    margin-bottom:8px;
+    background:#fff;
+}
+
+.foto-acoes{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.btn-foto-visualizar{
+    border:none;
+    background:#0097CE;
+    color:white;
+    padding:8px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:700;
+}
+
+.btn-foto-baixar{
+    border:none;
+    background:#f1f5f9;
+    color:#111827;
+    padding:8px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:700;
+}
+
+.linha-clicavel{
+    cursor:pointer;
+    transition:.15s;
+}
+
+.linha-clicavel:hover{
+    background:#f0fbff;
+}
+
+.info-consulta{
+    margin:12px 0;
+    color:#6b7280;
+    font-size:13px;
+}
+
+@media(max-width:800px){
+
+    .detalhe-grid{
+        grid-template-columns:1fr;
+    }
+
+    .foto-item{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+}
 
 </style>
 
@@ -904,32 +1062,49 @@ input[readonly]{
                     </thead>
 
                     <tbody id="tbodyHistorico">
-                        <tr>
-                            <td>01/08/2026</td>
-                            <td>EPI</td>
-                            <td><span class="badge entrega">ENTREGA</span></td>
-                            <td>Pedro Fillype</td>
-                            <td>Capacete Classe B</td>
-                            <td>1</td>
-                            <td><span class="badge ok">Concluído</span></td>
-                        </tr>
-
-                        <tr>
-                            <td>01/08/2026</td>
-                            <td>FERRAMENTAL</td>
-                            <td><span class="badge substituicao">SUBSTITUIÇÃO</span></td>
-                            <td>João Silva</td>
-                            <td>Detector de Tensão</td>
-                            <td>1</td>
-                            <td><span class="badge ok">Concluído</span></td>
-                        </tr>
-                    </tbody>
+    <tr>
+        <td colspan="7" style="text-align:center; color:#777;">
+            Carregando últimas movimentações...
+        </td>
+    </tr>
+</tbody>
 
                 </table>
 
             </div>
 
         </section>
+        <div class="modal-overlay" id="modalDetalheMovimentacao">
+
+    <div class="modal-detalhe">
+
+        <div class="modal-detalhe-header">
+
+            <div>
+                <h2 id="tituloDetalheMovimentacao">
+                    Detalhes da Movimentação
+                </h2>
+
+                <small id="subtituloDetalheMovimentacao">
+                    Informações completas do registro
+                </small>
+            </div>
+
+            <button
+                type="button"
+                class="fechar-modal-detalhe"
+                onclick="fecharDetalheMovimentacao()">
+                ×
+            </button>
+
+        </div>
+
+        <div id="conteudoDetalheMovimentacao">
+        </div>
+
+    </div>
+
+</div>
 
     </main>
 
@@ -1799,7 +1974,7 @@ function limparFormulario(){
    HISTÓRICO
 ============================== */
 
-async function carregarHistorico(){
+async function carregarHistorico(opcoes = {}){
 
     try{
 
@@ -1810,9 +1985,48 @@ async function carregarHistorico(){
             return;
         }
 
+        const limite =
+        opcoes.limite || 10;
+
+        const params =
+        new URLSearchParams();
+
+        params.set(
+            "limit",
+            String(limite)
+        );
+
+        if(opcoes.pesquisa){
+            params.set(
+                "q",
+                opcoes.pesquisa
+            );
+        }
+
+        if(opcoes.categoria){
+            params.set(
+                "categoria",
+                opcoes.categoria
+            );
+        }
+
+        if(opcoes.tipo){
+            params.set(
+                "tipo",
+                opcoes.tipo
+            );
+        }
+
+        if(opcoes.data){
+            params.set(
+                "data",
+                opcoes.data
+            );
+        }
+
         const resp =
         await authFetch(
-            `${API}/movimentacoes`
+            `${API}/movimentacoes?${params.toString()}`
         );
 
         if(!resp.ok){
@@ -1834,6 +2048,20 @@ async function carregarHistorico(){
 
         tbody.innerHTML = "";
 
+        if(!lista.length){
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" style="text-align:center; color:#777; padding:20px;">
+                        Nenhuma movimentação encontrada.
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
+
         lista.forEach(item => {
 
             const classe =
@@ -1844,30 +2072,53 @@ async function carregarHistorico(){
             : "transferencia";
 
             const data =
-            item.data_movimentacao ||
-            item.data ||
-            "";
+            formatarDataMovimentacao(
+                item.data_movimentacao ||
+                item.criado_em ||
+                item.data
+            );
 
             const pessoa =
             item.colaborador ||
             item.origem ||
             "-";
 
+            const material =
+            item.equipamento_novo ||
+            item.equipamento ||
+            item.material ||
+            "";
+
+            const payload =
+            encodeURIComponent(
+                JSON.stringify(item)
+            );
+
             tbody.innerHTML += `
-                <tr>
+                <tr
+                    class="linha-clicavel"
+                    onclick="abrirDetalheMovimentacao('${payload}')"
+                    title="Clique para ver detalhes da movimentação"
+                >
                     <td>${data}</td>
-                    <td>${item.categoria || ""}</td>
+
+                    <td>${escaparHTMLLocal(item.categoria || "")}</td>
+
                     <td>
                         <span class="badge ${classe}">
-                            ${item.operacao || ""}
+                            ${escaparHTMLLocal(item.operacao || "")}
                         </span>
                     </td>
-                    <td>${pessoa}</td>
-                    <td>${item.equipamento || ""}</td>
-                    <td>${item.quantidade || ""}</td>
+
+                    <td>${escaparHTMLLocal(pessoa)}</td>
+
+                    <td>${escaparHTMLLocal(material)}</td>
+
+                    <td>${Number(item.quantidade || 0)}</td>
+
                     <td>
                         <span class="badge ok">
-                            Concluído
+                            Ver detalhes
                         </span>
                     </td>
                 </tr>
@@ -1877,7 +2128,10 @@ async function carregarHistorico(){
 
     }catch(e){
 
-        console.error(e);
+        console.error(
+            "Erro ao carregar histórico:",
+            e
+        );
 
     }
 
@@ -1960,69 +2214,40 @@ function fecharConsulta(){
 
 }
 
-function filtrarHistorico(){
+async function filtrarHistorico(){
 
     const pesquisa =
-    valor("pesquisaHistorico").toLowerCase();
+    valor("pesquisaHistorico");
 
     const categoria =
-    valor("filtroCategoria").toLowerCase();
+    valor("filtroCategoria");
 
     const tipo =
-    valor("filtroTipo").toLowerCase();
+    valor("filtroTipo");
 
     const data =
     valor("filtroData");
 
-    const linhas =
-    el("tbodyHistorico").querySelectorAll("tr");
-
-    linhas.forEach(linha => {
-
-        const textoLinha =
-        linha.innerText.toLowerCase();
-
-        const okPesquisa =
-        !pesquisa || textoLinha.includes(pesquisa);
-
-        const okCategoria =
-        !categoria || textoLinha.includes(categoria);
-
-        const okTipo =
-        !tipo || textoLinha.includes(tipo);
-
-        let okData = true;
-
-        if(data){
-
-            const dataBR =
-            data.split("-").reverse().join("/");
-
-            okData =
-            textoLinha.includes(dataBR);
-
-        }
-
-        linha.style.display =
-        okPesquisa &&
-        okCategoria &&
-        okTipo &&
-        okData
-        ? ""
-        : "none";
-
+    await carregarHistorico({
+        limite:50,
+        pesquisa,
+        categoria,
+        tipo,
+        data
     });
 
 }
 
-function limparFiltrosHistorico(){
+async function limparFiltrosHistorico(){
 
     el("pesquisaHistorico").value = "";
     el("filtroCategoria").value = "";
     el("filtroTipo").value = "";
     el("filtroData").value = "";
 
-    filtrarHistorico();
+    await carregarHistorico({
+        limite:10
+    });
 
 }
 
@@ -2247,6 +2472,343 @@ document.addEventListener(
 
     }
 );
+    function abrirDetalheMovimentacao(payload){
+
+    let item = {};
+
+    try{
+
+        item =
+        JSON.parse(
+            decodeURIComponent(payload)
+        );
+
+    }catch(e){
+
+        console.error(
+            "Erro ao abrir detalhe:",
+            e
+        );
+
+        alert(
+            "Não foi possível abrir os detalhes da movimentação."
+        );
+
+        return;
+
+    }
+
+    const modal =
+    el("modalDetalheMovimentacao");
+
+    const titulo =
+    el("tituloDetalheMovimentacao");
+
+    const subtitulo =
+    el("subtituloDetalheMovimentacao");
+
+    const conteudo =
+    el("conteudoDetalheMovimentacao");
+
+    if(!modal || !conteudo){
+        return;
+    }
+
+    const material =
+    item.equipamento_novo ||
+    item.equipamento ||
+    item.material ||
+    "-";
+
+    titulo.innerText =
+    item.operacao
+    ? `${item.operacao} - ${material}`
+    : "Detalhes da Movimentação";
+
+    subtitulo.innerText =
+    item.colaborador ||
+    item.origem ||
+    "Registro de movimentação";
+
+    const fotos =
+    normalizarFotosMovimentacao(
+        item.fotos
+    );
+
+    let fotosHtml = "";
+
+    if(fotos.length){
+
+        fotosHtml = `
+            <div class="fotos-detalhe">
+
+                <h3 style="margin-bottom:10px;">
+                    Evidências anexadas
+                </h3>
+
+                ${fotos.map((foto,index)=>`
+                    <div class="foto-item">
+
+                        <span>
+                            📷 Foto ${index + 1}
+                        </span>
+
+                        <div class="foto-acoes">
+
+                            <button
+                                type="button"
+                                class="btn-foto-visualizar"
+                                onclick="visualizarFoto('${escaparAtributo(foto)}')"
+                            >
+                                Visualizar
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn-foto-baixar"
+                                onclick="baixarFoto('${escaparAtributo(foto)}')"
+                            >
+                                Baixar
+                            </button>
+
+                        </div>
+
+                    </div>
+                `).join("")}
+
+            </div>
+        `;
+
+    }else{
+
+        fotosHtml = `
+            <div class="fotos-detalhe">
+                <p style="color:#777;">
+                    Nenhuma foto anexada nesta movimentação.
+                </p>
+            </div>
+        `;
+
+    }
+
+    conteudo.innerHTML = `
+
+        <div class="detalhe-grid">
+
+            <div class="detalhe-item">
+                <strong>Data</strong>
+                <span>
+                    ${formatarDataMovimentacao(
+                        item.data_movimentacao ||
+                        item.criado_em ||
+                        item.data
+                    )}
+                </span>
+            </div>
+
+            <div class="detalhe-item">
+                <strong>Categoria</strong>
+                <span>${escaparHTMLLocal(item.categoria || "-")}</span>
+            </div>
+
+            <div class="detalhe-item">
+                <strong>Operação</strong>
+                <span>${escaparHTMLLocal(item.operacao || "-")}</span>
+            </div>
+
+            <div class="detalhe-item">
+                <strong>Colaborador</strong>
+                <span>${escaparHTMLLocal(item.colaborador || "-")}</span>
+            </div>
+
+            <div class="detalhe-item">
+                <strong>Matrícula</strong>
+                <span>${escaparHTMLLocal(item.matricula || "-")}</span>
+            </div>
+
+            <div class="detalhe-item">
+                <strong>Material</strong>
+                <span>${escaparHTMLLocal(material)}</span>
+            </div>
+
+            <div class="detalhe-item">
+                <strong>Quantidade</strong>
+                <span>${Number(item.quantidade || 0)}</span>
+            </div>
+
+            <div class="detalhe-item">
+                <strong>Estado do material</strong>
+                <span>${escaparHTMLLocal(item.estado_material || "-")}</span>
+            </div>
+
+            <div class="detalhe-item">
+                <strong>Regional</strong>
+                <span>${escaparHTMLLocal(item.regional || "-")}</span>
+            </div>
+
+            <div class="detalhe-item">
+                <strong>Polo</strong>
+                <span>${escaparHTMLLocal(item.polo || "-")}</span>
+            </div>
+
+            <div class="detalhe-item">
+                <strong>Base</strong>
+                <span>${escaparHTMLLocal(item.base || "-")}</span>
+            </div>
+
+            <div class="detalhe-item">
+                <strong>Responsável</strong>
+                <span>${escaparHTMLLocal(item.responsavel || item.criado_por || "-")}</span>
+            </div>
+
+            <div class="detalhe-item">
+                <strong>Origem</strong>
+                <span>${escaparHTMLLocal(item.origem || "-")}</span>
+            </div>
+
+            <div class="detalhe-item">
+                <strong>Destino</strong>
+                <span>${escaparHTMLLocal(item.destino || "-")}</span>
+            </div>
+
+            <div class="detalhe-item detalhe-full">
+                <strong>Observação</strong>
+                <span>${escaparHTMLLocal(item.observacao || "-")}</span>
+            </div>
+
+        </div>
+
+        ${fotosHtml}
+    `;
+
+    modal.style.display =
+    "flex";
+
+}
+
+function fecharDetalheMovimentacao(){
+
+    const modal =
+    el("modalDetalheMovimentacao");
+
+    if(modal){
+        modal.style.display =
+        "none";
+    }
+
+}
+
+function normalizarFotosMovimentacao(valor){
+
+    let fotos = [];
+
+    if(!valor){
+        return [];
+    }
+
+    try{
+
+        if(Array.isArray(valor)){
+            fotos = valor;
+        }
+
+        else if(typeof valor === "string"){
+
+            const texto =
+            valor.trim();
+
+            if(!texto || texto === "null" || texto === "undefined"){
+                return [];
+            }
+
+            try{
+
+                const convertido =
+                JSON.parse(texto);
+
+                if(Array.isArray(convertido)){
+                    fotos = convertido;
+                }else if(convertido){
+                    fotos = [convertido];
+                }
+
+            }catch(e){
+
+                fotos = [texto];
+
+            }
+
+        }
+
+    }catch(e){
+
+        fotos = [];
+
+    }
+
+    fotos =
+    fotos.map(foto => {
+
+        if(
+            typeof foto === "object" &&
+            foto !== null
+        ){
+
+            return (
+                foto.url ||
+                foto.URL ||
+                foto.link ||
+                foto.src ||
+                foto.chave ||
+                foto.key ||
+                ""
+            );
+
+        }
+
+        return String(foto || "");
+
+    })
+    .map(foto =>
+        limparReferenciaFoto
+        ? limparReferenciaFoto(foto)
+        : foto
+    )
+    .filter(foto => foto)
+    .filter((foto,index,array) =>
+        array.indexOf(foto) === index
+    );
+
+    return fotos;
+
+}
+
+function formatarDataMovimentacao(valor){
+
+    if(!valor){
+        return "-";
+    }
+
+    try{
+
+        const data =
+        new Date(valor);
+
+        if(isNaN(data.getTime())){
+            return valor;
+        }
+
+        return data.toLocaleDateString(
+            "pt-BR"
+        );
+
+    }catch(e){
+
+        return valor;
+
+    }
+
+}
 
 /* ==============================
    INICIALIZAÇÃO
@@ -2260,7 +2822,9 @@ document.addEventListener(
 
         atualizarEtapas(1);
 
-        await carregarHistorico();
+        await carregarHistorico({
+            limite:10
+        });
 
     }
 );
