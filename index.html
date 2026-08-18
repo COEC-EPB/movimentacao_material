@@ -754,19 +754,48 @@ input[readonly]{
     left:0;
     right:0;
 
-    background:#fff;
+    background:white;
 
-    border:1px solid #e5e7eb;
+    border:1px solid #dbe4ee;
 
     border-radius:12px;
 
-    max-height:350px;
+    max-height:260px;
 
     overflow-y:auto;
 
     z-index:99999;
 
     display:none;
+
+    box-shadow:
+    0 12px 30px rgba(0,0,0,.12);
+
+}
+
+#sugestoesMateriais .sugestao-item{
+
+    padding:12px;
+
+    font-size:14px;
+
+    border-bottom:1px solid #f1f5f9;
+
+}
+
+#sugestoesMateriais .sugestao-item:hover{
+
+    background:#f0fbff;
+
+}
+
+}#equipamento{
+
+    width:100%;
+
+    height:48px;
+
+    font-size:15px;
 
 }
 
@@ -1271,6 +1300,8 @@ function atualizarEtapas(etapa){
 
     if(texto.length < 2){
 
+        box.innerHTML = "";
+
         box.style.display = "none";
 
         return;
@@ -1278,16 +1309,19 @@ function atualizarEtapas(etapa){
     }
 
     const resultado =
-    MATERIAIS.filter(item =>
-        item.includes(texto)
-    ).slice(0,20);
+    MATERIAIS
+    .filter(item =>
+        item.toUpperCase()
+        .includes(texto)
+    )
+    .slice(0,15);
 
     box.innerHTML =
     resultado.map(item => `
 
         <div
             class="sugestao-item"
-            onclick="selecionarMaterial('${item}')">
+            onclick="selecionarMaterial('${item.replace(/'/g,"\\'")}')">
 
             ${item}
 
@@ -1624,7 +1658,7 @@ function montarEntrega(){
 
     <input
         id="equipamento"
-        placeholder="Digite para pesquisar o material"
+        placeholder="Digite o nome do material..."
         autocomplete="off"
         oninput="buscarMaterial()">
 
@@ -1634,122 +1668,6 @@ function montarEntrega(){
     </div>
 
 </div>
-
-                <option value="">Selecione...</option>
-
-                <option value="320527 - BALACLAVA CAPUZ ANTICHAMAS">
-                    320527 - BALACLAVA CAPUZ ANTICHAMAS
-                </option>
-
-                <option value="80055 - CAPACETE SEGURANCA PEAD ABA TOTAL TIPO I CLASSE B BRC">
-                    80055 - CAPACETE SEGURANCA PEAD ABA TOTAL TIPO I CLASSE B BRC
-                </option>
-
-                <option value="80059 - CAPACETE SEGURANCA PEAD ABA FRONTAL TIPO II CLASSE B BRC">
-                    80059 - CAPACETE SEGURANCA PEAD ABA FRONTAL TIPO II CLASSE B BRC
-                </option>
-
-                <option value="CALCA P ANTICHAMA DISTR M04">
-                    CALCA P ANTICHAMA DISTR M04
-                </option>
-
-                <option value="CALCA PP ANTICHAMA DISTR M04">
-                    CALCA PP ANTICHAMA DISTR M04
-                </option>
-
-                <option value="CALCA M ANTICHAMA DISTR M04">
-                    CALCA M ANTICHAMA DISTR M04
-                </option>
-
-                <option value="CALCA G ANTICHAMA DISTR M04">
-                    CALCA G ANTICHAMA DISTR M04
-                </option>
-
-                <option value="CALCA GG ANTICHAMA DISTR M04">
-                    CALCA GG ANTICHAMA DISTR M04
-                </option>
-
-                <option value="CALCA EG ANTICHAMA DISTR M04">
-                    CALCA EG ANTICHAMA DISTR M04
-                </option>
-
-                <option value="CAMISA P ANTICHAMA DISTR M03">
-                    CAMISA P ANTICHAMA DISTR M03
-                </option>
-
-                <option value="CAMISA M ANTICHAMA DISTR M03">
-                    CAMISA M ANTICHAMA DISTR M03
-                </option>
-
-                <option value="CAMISA G ANTICHAMA DISTR M03">
-                    CAMISA G ANTICHAMA DISTR M03
-                </option>
-
-                <option value="CAMISA GG ANTICHAMA DISTR M03">
-                    CAMISA GG ANTICHAMA DISTR M03
-                </option>
-
-                <option value="LUVA DE VAQUETA TAM 9">
-                    LUVA DE VAQUETA TAM 9
-                </option>
-
-                <option value="LUVA DE VAQUETA TAM 10">
-                    LUVA DE VAQUETA TAM 10
-                </option>
-
-                <option value="LUVA DE COBERTURA TAM 9">
-                    LUVA DE COBERTURA TAM 9
-                </option>
-
-                <option value="LUVA ISOLANTE SEGURANCA 9IN 360MM CL0 1,0KV PRT">
-                    LUVA ISOLANTE SEGURANCA 9IN 360MM CL0 1,0KV PRT
-                </option>
-
-                <option value="MANTA ISOLANTE DE BT">
-                    MANTA ISOLANTE DE BT
-                </option>
-
-                <option value="VARA MANOBRA TELESC">
-                    VARA MANOBRA TELESC
-                </option>
-
-                <option value="ALICATE UNIVERSAL 1KV 8 POLEGADAS">
-                    ALICATE UNIVERSAL 1KV 8 POLEGADAS
-                </option>
-
-                <option value="CHAVE CATRACA 13">
-                    CHAVE CATRACA 13
-                </option>
-
-                <option value="CHAVE CATRACA 17">
-                    CHAVE CATRACA 17
-                </option>
-
-                <option value="CHAVE CATRACA 19">
-                    CHAVE CATRACA 19
-                </option>
-
-
-<option value="ALICATE AMPERIMETRO"> ALICATE AMPERIMETRO</option>
-
-<option value="BASTÃO PEGA TUDO">BASTÃO PEGA TUDO</option>
-
-<option value="PLACA DE SINALIZAÇÃO (HOMENS TRABALHANDO)">PLACA DE SINALIZAÇÃO (HOMENS TRABALHANDO)</option>
-
-<option value="DAQC">DAQC</option>
-
-<option value="BASTÃO PODADOR">BASTÃO PODADOR</option>
-
-<option value="LAMINA PARA PODADOR">LAMINA PARA PODADOR</option>
-
-<option value="CABEÇOTE VARA DE MANOBRA">CABEÇOTE VARA DE MANOBRA</option>
-
-<option value="LOADBUSTER ( DAC )">LOADBUSTER ( DAC )</option>
-
-<option value="CHAVE LOBULAR">CHAVE LOBULAR</option>
-
-
-</select>
 
         </div>
 
