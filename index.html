@@ -746,6 +746,28 @@ input[readonly]{
 
 }#materialEntrada{
     height:300px;
+}#sugestoesMateriais{
+
+    position:absolute;
+
+    top:74px;
+    left:0;
+    right:0;
+
+    background:#fff;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:12px;
+
+    max-height:350px;
+
+    overflow-y:auto;
+
+    z-index:99999;
+
+    display:none;
+
 }
 
 </style>
@@ -1112,6 +1134,34 @@ let moduloSelecionado = "";
 let operacaoSelecionada = "";
 let timerBuscaColaborador = null;
 
+    const MATERIAIS = [
+
+"BALACLAVA CAPUZ ANTICHAMAS",
+"CALCA P ANTICHAMA DISTR M04",
+"CALCA M ANTICHAMA DISTR M04",
+"CALCA G ANTICHAMA DISTR M04",
+"CALCA GG ANTICHAMA DISTR M04",
+"CAMISA P ANTICHAMA DISTR M03",
+"CAMISA M ANTICHAMA DISTR M03",
+"CAMISA G ANTICHAMA DISTR M03",
+"CAMISA GG ANTICHAMA DISTR M03",
+"LUVA DE VAQUETA TAM 9",
+"LUVA DE COBERTURA TAM 9",
+"LUVA ISOLANTE SEGURANCA 9IN 360MM CL0 1,0KV PRT",
+"MANTA ISOLANTE DE BT",
+"VARA MANOBRA TELESC",
+"ALICATE UNIVERSAL 1KV 8 POLEGADAS",
+"ALICATE AMPERIMETRO",
+"CHAVE CATRACA 13",
+"CHAVE CATRACA 17",
+"CHAVE CATRACA 19",
+"LOADBUSTER ( DAC )",
+"CHAVE LOBULAR",
+
+// restante da lista...
+
+];
+
 let usuarioLogado = {};
 
 function el(id){
@@ -1203,6 +1253,61 @@ function atualizarEtapas(etapa){
     if(etapa >= 4 && el("etapa4")){
         el("etapa4").classList.add("ativa");
     }
+
+}
+
+    function buscarMaterial(){
+
+    const texto =
+    valor("equipamento")
+    .toUpperCase();
+
+    const box =
+    el("sugestoesMateriais");
+
+    if(!box){
+        return;
+    }
+
+    if(texto.length < 2){
+
+        box.style.display = "none";
+
+        return;
+
+    }
+
+    const resultado =
+    MATERIAIS.filter(item =>
+        item.includes(texto)
+    ).slice(0,20);
+
+    box.innerHTML =
+    resultado.map(item => `
+
+        <div
+            class="sugestao-item"
+            onclick="selecionarMaterial('${item}')">
+
+            ${item}
+
+        </div>
+
+    `).join("");
+
+    box.style.display =
+    resultado.length
+    ? "block"
+    : "none";
+
+}
+    function selecionarMaterial(material){
+
+    el("equipamento").value =
+    material;
+
+    el("sugestoesMateriais")
+    .style.display = "none";
 
 }
 
@@ -1513,16 +1618,22 @@ function montarEntrega(){
 
         <div class="campo">
 
-            <label>Material / Equipamento</label>
+            <div class="campo campo-autocomplete">
 
-            <select
-                id="equipamento"
-                size="15"
-                style="
-                    height:350px;
-                    overflow-y:auto;
-                    font-size:14px;
-                ">
+    <label>Material / Equipamento</label>
+
+    <input
+        id="equipamento"
+        placeholder="Digite para pesquisar o material"
+        autocomplete="off"
+        oninput="buscarMaterial()">
+
+    <div
+        id="sugestoesMateriais"
+        class="sugestoes">
+    </div>
+
+</div>
 
                 <option value="">Selecione...</option>
 
