@@ -537,14 +537,16 @@ td{
     border:1px solid #ddd;
     border-radius:12px;
     box-shadow:0 8px 20px rgba(0,0,0,.12);
-    z-index:500;
+    z-index:99999;
     display:none;
-    max-height:260px;
-    overflow:auto;
+    max-height:600px;
+    overflow-y:auto;
 }
 
 .sugestao-item{
-    padding:12px;
+    padding:14px;
+    min-height:50px;
+    font-size:14px;
     cursor:pointer;
     border-bottom:1px solid #eee;
 }
@@ -1510,156 +1512,134 @@ function montarEntrega(){
         ${campoColaboradorHTML("Colaborador que recebeu")}
 
         <div class="campo">
+
             <label>Material / Equipamento</label>
-           <select id="materialEntrada" size="10">
-    list="listaMateriais"
-    placeholder="Selecione ou digite o material">
-    
 
-<option value="320527 - BALACLAVA CAPUZ ANTICHAMAS">
+            <select
+                id="equipamento"
+                size="15"
+                style="
+                    height:350px;
+                    overflow-y:auto;
+                    font-size:14px;
+                ">
 
-<option value="80055 - CAPACETE SEGURANCA PEAD ABA TOTAL TIPO I CLASSE B BRC">
-<option value="80059 - CAPACETE SEGURANCA PEAD ABA FRONTAL TIPO II CLASSE B BRC">
+                <option value="">Selecione...</option>
 
-<option value="CALCA P ANTICHAMA DISTR M04">
-<option value="CALCA PP ANTICHAMA DISTR M04">
-<option value="CALCA M ANTICHAMA DISTR M04">
-<option value="CALCA G ANTICHAMA DISTR M04">
-<option value="CALCA GG ANTICHAMA DISTR M04">
-<option value="CALCA EG ANTICHAMA DISTR M04">
-<option value="CALCA FEMININA RETARDANTE A CHAMAS PP">
-<option value="CALCA FEMININA RETARDANTE A CHAMAS P">
-<option value="CALCA FEMININA RETARDANTE A CHAMAS M">
-<option value="CALCA FEMININA RETARDANTE A CHAMAS G">
-<option value="CALCA FEMININA RETARDANTE A CHAMAS GG">
-<option value="CALCA FEMININA RETARDANTE A CHAMAS EXG">
+                <option value="320527 - BALACLAVA CAPUZ ANTICHAMAS">
+                    320527 - BALACLAVA CAPUZ ANTICHAMAS
+                </option>
 
-<option value="CAMISA PP ANTICHAMA DISTR M03">
-<option value="CAMISA P ANTICHAMA DISTR M03">
-<option value="CAMISA M ANTICHAMA DISTR M03">
-<option value="CAMISA G ANTICHAMA DISTR M03">
-<option value="CAMISA GG ANTICHAMA DISTR M03">
-<option value="CAMISA EG ANTICHAMA DISTR M03">
-<option value="CAMISA XXG ANTICHAMA DISTR M03">
-<option value="CAMISA XXXG ANTICHAMA DISTR M03">
+                <option value="80055 - CAPACETE SEGURANCA PEAD ABA TOTAL TIPO I CLASSE B BRC">
+                    80055 - CAPACETE SEGURANCA PEAD ABA TOTAL TIPO I CLASSE B BRC
+                </option>
 
-<option value="CAMISA DE MALHA RETARDANTE A CHAMAS - P">
-<option value="CAMISA DE MALHA RETARDANTE A CHAMAS - M">
-<option value="CAMISA DE MALHA RETARDANTE A CHAMAS - G">
-<option value="CAMISA DE MALHA RETARDANTE A CHAMAS - GG">
-<option value="CAMISA DE MALHA RETARDANTE A CHAMAS - EXG">
-<option value="CAMISA DE MALHA FEMININA RETARDANTE A CHAMAS PP">
-<option value="CAMISA DE MALHA FEMININA RETARDANTE A CHAMAS P">
-<option value="CAMISA DE MALHA FEMININA RETARDANTE A CHAMAS M">
-<option value="CAMISA DE MALHA FEMININA RETARDANTE A CHAMAS G">
-<option value="CAMISA DE MALHA FEMININA RETARDANTE A CHAMAS GG">
-<option value="CAMISA DE MALHA FEMININA RETARDANTE A CHAMAS EXG">
+                <option value="80059 - CAPACETE SEGURANCA PEAD ABA FRONTAL TIPO II CLASSE B BRC">
+                    80059 - CAPACETE SEGURANCA PEAD ABA FRONTAL TIPO II CLASSE B BRC
+                </option>
 
-<option value="CARNEIRA TRES PONTOS MSA">
-<option value="CARNEIRA TRES PONTOS MAS">
-<option value="CARNEIRA PARA CAPACETE LIBUS">
-<option value="JUGULAR PARA CAPACETE LIBUS">
+                <option value="CALCA P ANTICHAMA DISTR M04">
+                    CALCA P ANTICHAMA DISTR M04
+                </option>
 
-<option value="COTURNO SEGURANCA COURO IMPERM TAM. N. 36 ZIP/VELC PRT">
-<option value="COTURNO SEGURANCA COURO IMPERM TAM. N. 37 ZIP/VELC PRT">
-<option value="COTURNO SEGURANCA COURO IMPERM TAM. N. 38 ZIP/VELC PRT">
-<option value="COTURNO SEGURANCA COURO IMPERM TAM. N. 39 ZIP/VELC PRT">
-<option value="COTURNO SEGURANCA COURO IMPERM TAM. N. 40 ZIP/VELC PRT">
-<option value="COTURNO SEGURANCA COURO IMPERM TAM. N. 41 ZIP/VELC PRT">
-<option value="COTURNO SEGURANCA COURO IMPERM TAM. N. 42 ZIP/VELC PRT">
-<option value="COTURNO SEGURANCA COURO IMPERM TAM. N. 43 ZIP/VELC PRT">
-<option value="COTURNO SEGURANCA COURO IMPERM TAM. N. 44 ZIP/VELC PRT">
-<option value="COTURNO SEGURANCA COURO IMPERM TAM. N. 45 ZIP/VELC PRT">
+                <option value="CALCA PP ANTICHAMA DISTR M04">
+                    CALCA PP ANTICHAMA DISTR M04
+                </option>
 
-<option value="PROTETOR SOLAR FPS 60 COM REPELENTE">
+                <option value="CALCA M ANTICHAMA DISTR M04">
+                    CALCA M ANTICHAMA DISTR M04
+                </option>
 
-<option value="OCULOS SEGURANCA LENTE INCOLOR - UVEX">
-<option value="OCULOS SEGURANCA LENTE ESCURA - UVEX">
+                <option value="CALCA G ANTICHAMA DISTR M04">
+                    CALCA G ANTICHAMA DISTR M04
+                </option>
 
-<option value="LUVA DE VAQUETA TAM 9">
-<option value="LUVA DE VAQUETA TAM 9.5">
-<option value="LUVA DE VAQUETA TAM 10">
-<option value="LUVA DE VAQUETA TAM 10.5">
+                <option value="CALCA GG ANTICHAMA DISTR M04">
+                    CALCA GG ANTICHAMA DISTR M04
+                </option>
 
-<option value="LUVA DE COBERTURA TAM 9">
-<option value="LUVA DE COBERTURA TAM: 9,5">
-<option value="LUVA DE COBERTURA TAM: 10">
-<option value="LUVA DE COBERTURA TAM: 10,5">
+                <option value="CALCA EG ANTICHAMA DISTR M04">
+                    CALCA EG ANTICHAMA DISTR M04
+                </option>
 
-<option value="LUVA ISOLANTE SEGURANCA 8IN 360MM CL0 1,0KV PRT">
-<option value="LUVA ISOLANTE SEGURANCA 8,5IN 360MM CL0 1,0KV PRT">
-<option value="LUVA ISOLANTE SEGURANCA 9IN 360MM CL0 1,0KV PRT">
-<option value="LUVA ISOLANTE SEGURANCA 9,5IN 360MM CL0 1,0KV PRT">
-<option value="LUVA ISOLANTE SEGURANCA 10IN 360MM CL0 1,0KV PRT">
+                <option value="CAMISA P ANTICHAMA DISTR M03">
+                    CAMISA P ANTICHAMA DISTR M03
+                </option>
 
-<option value="LUVA ISOLANTE SEGURANCA 9IN 360MM CL2 15,0KV PRT">
-<option value="LUVA ISOLANTE SEGURANCA 9,5IN 360MM CL2 15,0KV PRT">
-<option value="LUVA ISOLANTE SEGURANCA 10IN 360MM CL2 15,0KV PRT">
-<option value="LUVA ISOLANTE SEGURANCA 10,5IN 360MM CL2 15,0KV PRT">
+                <option value="CAMISA M ANTICHAMA DISTR M03">
+                    CAMISA M ANTICHAMA DISTR M03
+                </option>
 
-<option value="MANTA ISOLANTE DE BT">
-<option value="FITA DE ANCORAGEM EUREKA">
+                <option value="CAMISA G ANTICHAMA DISTR M03">
+                    CAMISA G ANTICHAMA DISTR M03
+                </option>
 
-<option value="CONE SINALIZACAO REFLEX 400X400X750MM LRJ/BRC">
+                <option value="CAMISA GG ANTICHAMA DISTR M03">
+                    CAMISA GG ANTICHAMA DISTR M03
+                </option>
 
-<option value="MANGA ISOLANTE">
+                <option value="LUVA DE VAQUETA TAM 9">
+                    LUVA DE VAQUETA TAM 9
+                </option>
 
-<option value="ALICATE BOMBA DAGUA CURVO 12X40X254MM 1KV 6 POSICOES">
-<option value="ALICATE DE CORTE DIAGONAL 1KV 6 POLEGADAS">
-<option value="ALICATE UNIVERSAL 1KV 8 POLEGADAS">
+                <option value="LUVA DE VAQUETA TAM 10">
+                    LUVA DE VAQUETA TAM 10
+                </option>
 
-<option value="BOLSA FERRAMENTAS LONA 200X380X500MM">
-<option value="BALDE LONA VERDE 350X300MM 0,75 KG">
+                <option value="LUVA DE COBERTURA TAM 9">
+                    LUVA DE COBERTURA TAM 9
+                </option>
 
-<option value="BOLSA PARA LUVAS N.10 IMPERMEAVEL">
+                <option value="LUVA ISOLANTE SEGURANCA 9IN 360MM CL0 1,0KV PRT">
+                    LUVA ISOLANTE SEGURANCA 9IN 360MM CL0 1,0KV PRT
+                </option>
 
-<option value="BOLSA PARA PROTECAO DE CAPACETE E OCULOS (ABA TOTAL)">
+                <option value="MANTA ISOLANTE DE BT">
+                    MANTA ISOLANTE DE BT
+                </option>
 
-<option value="DETECTOR TENSAO PORTATIL CANETA 90 A 600 V">
+                <option value="VARA MANOBRA TELESC">
+                    VARA MANOBRA TELESC
+                </option>
 
-<option value="ESCADA ENC EXTENSIVEL FIBRA VIDRO 120KG 4230/7200M 330MM">
+                <option value="ALICATE UNIVERSAL 1KV 8 POLEGADAS">
+                    ALICATE UNIVERSAL 1KV 8 POLEGADAS
+                </option>
 
-<option value="FACAO PARA MATO ACO CARBONO 20 POLEGADAS">
-<option value="BAINHA PARA FACAO EM COURO 20 POLEGADAS">
+                <option value="CHAVE CATRACA 13">
+                    CHAVE CATRACA 13
+                </option>
 
-<option value="RECOLHEDOR FITA SINALIZACAO COM FITA 50MM 35000MM">
+                <option value="CHAVE CATRACA 17">
+                    CHAVE CATRACA 17
+                </option>
 
-<option value="VARA MANOBRA TELESC">
+                <option value="CHAVE CATRACA 19">
+                    CHAVE CATRACA 19
+                </option>
 
-<option value="VARA MANOBRA SECCION REFOR PRFV 5 ELEM 38MM 6.450MM LRJ/AMA">
 
-<option value="CHAVE PHILLIPS PEQUENA">
-<option value="CHAVE PHILLIPS GRANDE">
+<option value="ALICATE AMPERIMETRO"> ALICATE AMPERIMETRO</option>
 
-<option value="CHAVE DE FENDA PEQUENA">
-<option value="CHAVE DE FENDA GRANDE">
+<option value="BASTÃO PEGA TUDO">BASTÃO PEGA TUDO</option>
 
-<option value="CHAVE DE REGULAGEM">
+<option value="PLACA DE SINALIZAÇÃO (HOMENS TRABALHANDO)">PLACA DE SINALIZAÇÃO (HOMENS TRABALHANDO)</option>
 
-<option value="CHAVE CATRACA 13">
-<option value="CHAVE CATRACA 17">
-<option value="CHAVE CATRACA 19">
+<option value="DAQC">DAQC</option>
 
-<option value="ALICATE AMPERIMETRO">
+<option value="BASTÃO PODADOR">BASTÃO PODADOR</option>
 
-<option value="BASTÃO PEGA TUDO">
+<option value="LAMINA PARA PODADOR">LAMINA PARA PODADOR</option>
 
-<option value="PLACA DE SINALIZAÇÃO (HOMENS TRABALHANDO)">
+<option value="CABEÇOTE VARA DE MANOBRA">CABEÇOTE VARA DE MANOBRA</option>
 
-<option value="DAQC">
+<option value="LOADBUSTER ( DAC )">LOADBUSTER ( DAC )</option>
 
-<option value="BASTÃO PODADOR">
-
-<option value="LAMINA PARA PODADOR">
-
-<option value="CABEÇOTE VARA DE MANOBRA">
-
-<option value="LOADBUSTER ( DAC )">
-
-<option value="CHAVE LOBULAR">
+<option value="CHAVE LOBULAR">CHAVE LOBULAR</option>
 
 
 </select>
+
         </div>
 
         <div class="campo">
