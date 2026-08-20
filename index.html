@@ -744,8 +744,10 @@ input[readonly]{
         flex-direction:column;
     }
 
-}#materialEntrada{
-    height:300px;
+}#equipamento{
+    width:100%;
+    height:48px;
+    font-size:15px;
 }#sugestoesMateriais{
 
     position:absolute;
@@ -1873,9 +1875,25 @@ function montarSubstituicao(){
         ${campoColaboradorHTML("Colaborador que devolveu")}
 
         <div class="campo">
-            <label>Material / Equipamento</label>
-            <input id="equipamento" placeholder="Ex.: Luva isolante">
+
+    <div class="campo campo-autocomplete">
+
+        <label>Material / Equipamento</label>
+
+        <input
+            id="equipamento"
+            placeholder="Digite o nome do material..."
+            autocomplete="off"
+            oninput="buscarMaterial()">
+
+        <div
+            id="sugestoesMateriais"
+            class="sugestoes">
         </div>
+
+    </div>
+
+</div>
 
         <div class="campo">
             <label>Quantidade</label>
@@ -2003,9 +2021,25 @@ function montarTransferencia(){
         </div>
 
         <div class="campo">
-            <label>Material / Equipamento</label>
-            <input id="equipamento" placeholder="Ex.: Detector de tensão">
+
+    <div class="campo campo-autocomplete">
+
+        <label>Material / Equipamento</label>
+
+        <input
+            id="equipamento"
+            placeholder="Digite o nome do material..."
+            autocomplete="off"
+            oninput="buscarMaterial()">
+
+        <div
+            id="sugestoesMateriais"
+            class="sugestoes">
         </div>
+
+    </div>
+
+</div>
 
         <div class="campo">
             <label>Quantidade</label>
