@@ -2522,6 +2522,26 @@ if(
     return;
 
 }
+    if(
+    (
+        operacaoSelecionada === "ENTREGA" ||
+        operacaoSelecionada === "SUBSTITUICAO"
+    )
+){
+
+    if(
+        !valor("polo") ||
+        !valor("base")
+    ){
+
+        alert(
+            "O colaborador selecionado não possui Polo/Base cadastrados. Atualize o cadastro dele antes da movimentação."
+        );
+
+        return;
+    }
+
+}
     try{
 
         if(operacaoSelecionada === "SUBSTITUICAO"){
@@ -3197,24 +3217,69 @@ function selecionarColaborador(col){
     }
 
     if(el("polo")){
-    el("polo").value =
-    col.polo || "";
-}
+        el("polo").value =
+        col.polo || "";
+    }
 
-if(el("base")){
-    el("base").value =
-    col.base || "";
-}
+    if(el("base")){
+        el("base").value =
+        col.base || "";
+    }
+
+    // NOVA VALIDAÇÃO
+
+    if(
+        !col.polo ||
+        !col.base
+    ){
+
+        alert(
+            `O colaborador ${col.nome} não possui Polo/Base cadastrados.\n\nAtualize o cadastro dele em Colaboradores antes de realizar movimentações.`
+        );
+
+        limparDadosColaborador();
+
+        return;
+    }
 
     const box =
     el("sugestoesColaboradores");
 
     if(box){
+
         box.innerHTML = "";
-        box.style.display = "none";
+
+        box.style.display =
+        "none";
+
     }
 
 }
+
+    function limparDadosColaborador(){
+
+    if(el("colaborador")){
+        el("colaborador").value = "";
+    }
+
+    if(el("matricula")){
+        el("matricula").value = "";
+    }
+
+    if(el("regional")){
+        el("regional").value = "";
+    }
+
+    if(el("polo")){
+        el("polo").value = "";
+    }
+
+    if(el("base")){
+        el("base").value = "";
+    }
+
+}
+    
 
 /* ==============================
    EVENTOS GERAIS
