@@ -1160,7 +1160,7 @@ input[readonly]{
 <script src="https://coec-epb.github.io/login-Material/auth.js"></script>
 
 <script>
-
+let timerBuscaMaterialEstoque = null;
 let moduloSelecionado = "";
 let operacaoSelecionada = "";
 let timerBuscaColaborador = null;
@@ -1515,54 +1515,222 @@ function atualizarEtapas(etapa){
 
 }
 
-    function buscarMaterial(){
+function obterBaseOrigemMovimentacao(){
 
-    const texto =
-    valor("equipamento")
-    .toUpperCase();
+    if(
+        operacaoSelecionada === "ENTREGA" ||
+        operacaoSelecionada === "SUBSTITUICAO"
+    ){
 
-    const box =
-    el("sugestoesMateriais");
-
-    if(!box){
-        return;
-    }
-
-    if(texto.length < 2){
-
-        box.innerHTML = "";
-
-        box.style.display = "none";
-
-        return;
+        return valor("base");
 
     }
 
-    const resultado =
-    MATERIAIS
-    .filter(item =>
-        item.toUpperCase()
-        .includes(texto)
-    )
-    .slice(0,15);
+    if(
+        operacaoSelecionada === "TRANSFERENCIA"
+    ){
 
-    box.innerHTML =
-    resultado.map(item => `
+        return valor("baseOrigem");
 
-        <div
-            class="sugestao-item"
-            onclick="selecionarMaterial('${item.replace(/'/g,"\\'")}')">
+    }
 
-            ${item}
+    return "";
 
-        </div>
+}
 
-    `).join("");
+async function buscarMaterialNoEstoque(){
 
-    box.style.display =
-    resultado.length
-    ? "block"
-    : "none";
+    clearTimeout(
+        timerBuscaMaterialEstoque
+    );
+
+    timerBuscaMaterialEstoque =
+    setTimeout(
+        async function(){
+
+            const campo =
+                el("equipamento");
+
+            const box =
+                el("sugestoesMateriais");
+
+            const baseOrigem =
+                obterBaseOrigemMovimentacao();
+
+            if(!campo || !box){
+                return;
+            }
+
+            const pesquisa =
+                campo.value.trim();
+
+            if(!baseOrigem){
+
+                box.innerHTML = `
+                    <div class="sugestao-item">
+                        Selecione primeiro a base de origem.
+                    </div>
+                `;
+
+                box.style.display =
+                    "block";
+
+                return;
+            }
+
+            if(pesquisa.length < 2){
+
+                box.innerHTML = "";
+                box.style.display = "none";
+
+                return;
+            }
+
+            try{
+
+                const params =
+                    new URLSearchParams();
+
+                params.set(
+                    "base",
+                    baseOrigem
+                );
+
+                params.set(
+                    "q",
+                    pesquisa
+                );
+
+                params.set(
+                    "limit",
+                    "20"
+                );
+
+                const resp =
+                    await authFetch(
+                        `${API}/estoque-disponivel?${params.toString()}`
+                    );
+
+                const resultado =
+                    await resp.json()
+                    .catch(() => ({}));
+
+                if(
+                    !resp.ok ||
+                    resultado.sucesso === false
+                ){
+
+                    throw new Error(
+                        resultado.mensagem ||
+                        "Não foi possível consultar o estoque."
+                    );
+
+                }
+
+                const lista =
+                    resultado.dados || [];
+
+                if(!lista.length){
+
+                    box.innerHTML = `
+                        <div class="sugestao-item">
+                            Nenhum material disponível nessa base.
+                        </div>
+                    `;
+
+                    box.style.display =
+                        "block";
+
+                    return;
+                }
+
+                box.innerHTML =
+                    lista.map(item => `
+
+                        <div
+                            class="sugestao-item"
+                            onclick='selecionarMaterialEstoque(
+                                ${JSON.stringify(item)}
+                            )'>
+
+                            <strong>
+                                ${escaparHTMLLocal(
+                                    item.codigo || "Sem código"
+                                )}
+                            </strong>
+
+                            <span>
+                                ${escaparHTMLLocal(
+                                    item.material || ""
+                                )}
+                            </span>
+
+                            <small>
+                                Disponível:
+                                ${Number(item.quantidade || 0)}
+                                unidade(s)
+                            </small>
+
+                        </div>
+
+                    `).join("");
+
+                box.style.display =
+                    "block";
+
+            }catch(e){
+
+                console.error(e);
+
+                box.innerHTML = `
+                    <div class="sugestao-item">
+                        ${escaparHTMLLocal(e.message)}
+                    </div>
+                `;
+
+                box.style.display =
+                    "block";
+
+            }
+
+        },
+        300
+    );
+
+}
+
+function selecionarMaterialEstoque(item){
+
+    if(el("equipamento")){
+
+        el("equipamento").value =
+            item.material || "";
+
+    }
+
+    if(el("codigoEquipamento")){
+
+        el("codigoEquipamento").value =
+            item.codigo || "";
+
+    }
+
+    if(el("estoqueDisponivel")){
+
+        el("estoqueDisponivel").value =
+            Number(item.quantidade || 0);
+
+    }
+
+    if(el("sugestoesMateriais")){
+
+        el("sugestoesMateriais").innerHTML =
+            "";
+
+        el("sugestoesMateriais").style.display =
+            "none";
+
+    }
 
 }
     function selecionarMaterial(material){
@@ -1890,8 +2058,14 @@ function montarEntrega(){
         id="equipamento"
         placeholder="Digite o nome do material..."
         autocomplete="off"
-        oninput="buscarMaterial()">
+        oninput="buscarMaterialNoEstoque()">
+        <input
+    id="codigoEquipamento"
+    type="hidden">
 
+<input
+    id="estoqueDisponivel"
+    type="hidden">
     <div
         id="sugestoesMateriais"
         class="sugestoes">
@@ -1964,8 +2138,14 @@ function montarSubstituicao(){
             id="equipamento"
             placeholder="Digite o nome do material..."
             autocomplete="off"
-            oninput="buscarMaterial()">
+            oninput="buscarMaterialNoEstoque()">
+            <input
+    id="codigoEquipamento"
+    type="hidden">
 
+<input
+    id="estoqueDisponivel"
+    type="hidden">
         <div
             id="sugestoesMateriais"
             class="sugestoes">
@@ -2091,68 +2271,70 @@ function montarTransferencia(){
     el("formCampos").innerHTML = `
 
         <div class="campo">
-            <label>Polo Origem</label>
+            <label>Polo de origem</label>
 
             <select
                 id="poloOrigem"
                 onchange="atualizarBasesOrigem()">
 
                 <option value="">Selecione</option>
-                <option>JOÃO PESSOA</option>
-                <option>ITABAIANA</option>
-                <option>MAMANGUAPE</option>
+                <option value="JOÃO PESSOA">JOÃO PESSOA</option>
+                <option value="ITABAIANA">ITABAIANA</option>
+                <option value="MAMANGUAPE">MAMANGUAPE</option>
 
             </select>
         </div>
 
         <div class="campo">
-            <label>Base Origem</label>
+            <label>Base de origem</label>
 
-            <select id="baseOrigem">
+            <select
+                id="baseOrigem"
+                onchange="limparMaterialSelecionado()">
 
-                <option value="">
-                    Selecione
-                </option>
+                <option value="">Selecione o polo primeiro</option>
 
             </select>
         </div>
 
         <div class="campo">
-            <label>Polo Destino</label>
+            <label>Polo de destino</label>
 
             <select
                 id="poloDestino"
                 onchange="atualizarBasesDestino()">
 
                 <option value="">Selecione</option>
-                <option>JOÃO PESSOA</option>
-                <option>ITABAIANA</option>
-                <option>MAMANGUAPE</option>
+                <option value="JOÃO PESSOA">JOÃO PESSOA</option>
+                <option value="ITABAIANA">ITABAIANA</option>
+                <option value="MAMANGUAPE">MAMANGUAPE</option>
 
             </select>
         </div>
 
         <div class="campo">
-            <label>Base Destino</label>
+            <label>Base de destino</label>
 
             <select id="baseDestino">
 
-                <option value="">
-                    Selecione
-                </option>
+                <option value="">Selecione o polo primeiro</option>
 
             </select>
         </div>
 
         <div class="campo campo-autocomplete">
 
-            <label>Material / Equipamento</label>
+            <label>Material disponível na origem</label>
 
             <input
                 id="equipamento"
+                placeholder="Digite para pesquisar no estoque"
                 autocomplete="off"
-                placeholder="Digite o material"
-                oninput="buscarMaterial()">
+                oninput="buscarMaterialNoEstoque()">
+
+            <input
+                id="codigoEquipamento"
+                type="hidden">
 
             <div
                 id="sugestoesMateriais"
@@ -2162,31 +2344,80 @@ function montarTransferencia(){
         </div>
 
         <div class="campo">
-            <label>Quantidade</label>
-            <input id="quantidade" type="number" value="1">
+            <label>Quantidade disponível</label>
+
+            <input
+                id="estoqueDisponivel"
+                readonly
+                value="0">
+        </div>
+
+        <div class="campo">
+            <label>Quantidade da transferência</label>
+
+            <input
+                id="quantidade"
+                type="number"
+                min="1"
+                value="1">
         </div>
 
         <div class="campo">
             <label>Data da transferência</label>
-            <input id="dataMov" type="date">
+
+            <input
+                id="dataMov"
+                type="date">
         </div>
 
         <div class="campo">
-            <label>Responsável</label>
-            <input id="responsavel" readonly>
+            <label>Responsável pela transferência</label>
+
+            <input
+                id="responsavel"
+                readonly>
         </div>
 
         <div class="campo campo-full">
             <label>Observação</label>
 
             <textarea
-                id="observacao">
-            </textarea>
+                id="observacao"
+                placeholder="Informe os detalhes da transferência."></textarea>
         </div>
 
     `;
 
+    const usuario =
+        typeof getUser === "function"
+        ? getUser() || {}
+        : {};
+
+    if(el("poloOrigem") && usuario.polo){
+
+        el("poloOrigem").value =
+            usuario.polo;
+
+        atualizarBasesOrigem();
+
+    }
+
+    if(el("baseOrigem") && usuario.base){
+
+        el("baseOrigem").value =
+            usuario.base;
+
+    }
+
+    if(el("dataMov")){
+
+        el("dataMov").value =
+            hojeISO();
+
+    }
+
     preencherResponsavelLogado();
+
 }
 
 /* ==============================
@@ -2237,7 +2468,60 @@ async function salvarMovimentacao(){
     }
 
     let fotosUrls = [];
+    const quantidadeSolicitada =
+    Number(
+        valor("quantidade") || 0
+    );
 
+const quantidadeDisponivel =
+    Number(
+        valor("estoqueDisponivel") || 0
+    );
+
+if(
+    operacaoSelecionada === "TRANSFERENCIA"
+){
+
+    if(
+        !valor("baseOrigem") ||
+        !valor("baseDestino")
+    ){
+
+        alert(
+            "Informe as bases de origem e destino."
+        );
+
+        return;
+
+    }
+
+    if(
+        valor("baseOrigem") ===
+        valor("baseDestino")
+    ){
+
+        alert(
+            "A base de destino deve ser diferente da base de origem."
+        );
+
+        return;
+
+    }
+
+}
+
+if(
+    quantidadeSolicitada >
+    quantidadeDisponivel
+){
+
+    alert(
+        `Estoque insuficiente. Disponível: ${quantidadeDisponivel} unidade(s).`
+    );
+
+    return;
+
+}
     try{
 
         if(operacaoSelecionada === "SUBSTITUICAO"){
@@ -2363,41 +2647,86 @@ fotosUrls.push(
 
 function coletarDadosFormulario(){
 
+    const transferencia =
+        operacaoSelecionada ===
+        "TRANSFERENCIA";
+
     return {
 
-        categoria:moduloSelecionado,
+        categoria:
+            moduloSelecionado,
 
-        operacao:operacaoSelecionada,
+        operacao:
+            operacaoSelecionada,
 
-        colaborador:valor("colaborador"),
+        colaborador:
+            valor("colaborador"),
 
-        matricula:valor("matricula"),
+        matricula:
+            valor("matricula"),
 
-        equipamento:valor("equipamento"),
+        equipamento:
+            valor("equipamento"),
 
-        quantidade:Number(valor("quantidade") || 1),
+        codigo:
+            valor("codigoEquipamento"),
 
-        regional:valor("regional"),
+        quantidade:
+            Number(
+                valor("quantidade") || 1
+            ),
 
-        polo:valor("polo"),
+        regional:
+            valor("regional"),
 
-        base:valor("base"),
+        polo:
+            transferencia
+            ? valor("poloOrigem")
+            : valor("polo"),
 
-       origem:
-        `${valor("poloOrigem")} - ${valor("baseOrigem")}`,
-        
+        base:
+            transferencia
+            ? valor("baseOrigem")
+            : valor("base"),
+
+        polo_origem:
+            valor("poloOrigem"),
+
+        base_origem:
+            transferencia
+            ? valor("baseOrigem")
+            : valor("base"),
+
+        polo_destino:
+            valor("poloDestino"),
+
+        base_destino:
+            valor("baseDestino"),
+
+        origem:
+            transferencia
+            ? `${valor("poloOrigem")} - ${valor("baseOrigem")}`
+            : valor("origem"),
+
         destino:
-        `${valor("poloDestino")} - ${valor("baseDestino")}`,
+            transferencia
+            ? `${valor("poloDestino")} - ${valor("baseDestino")}`
+            : valor("destino"),
 
-        estadoMaterial:valor("estadoMaterial"),
+        estadoMaterial:
+            valor("estadoMaterial"),
 
-        data:valor("dataMov"),
+        data:
+            valor("dataMov"),
 
-        responsavel:valor("responsavel"),
+        responsavel:
+            valor("responsavel"),
 
-        observacao:valor("observacao"),
+        observacao:
+            valor("observacao"),
 
-        criado_em:new Date().toISOString()
+        criado_em:
+            new Date().toISOString()
 
     };
 
