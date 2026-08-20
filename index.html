@@ -1341,6 +1341,33 @@ let timerBuscaColaborador = null;
   "80120 - VARA MANOBRA SECCION REFOR PRFV 5 ELEM 38MM 6.450MM LRJ/AMA"
 ];
 
+    const BASES_POR_POLO = {
+
+    "JOÃO PESSOA":[
+        "CABEDELO",
+        "SEDE",
+        "CRUZ DO PEIXE",
+        "PARATIBE",
+        "SANTA RITA",
+        "MANGABEIRA"
+    ],
+
+    "ITABAIANA":[
+        "ITABAIANA",
+        "INGÁ",
+        "GURINHÉM",
+        "CAAPORÂ"
+    ],
+
+    "MAMANGUAPE":[
+        "MAMANGUAPE",
+        "SAPÉ",
+        "BAÍA DA TRAIÇÃO",
+        "MATARACA"
+    ]
+
+};
+
 let usuarioLogado = {};
 
 function el(id){
@@ -1354,6 +1381,59 @@ function setTexto(id, texto){
     if(elemento){
         elemento.innerText = texto || "";
     }
+
+}
+    function atualizarBasesOrigem(){
+
+    const polo =
+    document.getElementById("poloOrigem").value;
+
+    const select =
+    document.getElementById("baseOrigem");
+
+    select.innerHTML =
+    '<option value="">Selecione</option>';
+
+    if(!BASES_POR_POLO[polo]){
+        return;
+    }
+
+    BASES_POR_POLO[polo].forEach(base => {
+
+        select.innerHTML += `
+            <option value="${base}">
+                ${base}
+            </option>
+        `;
+
+    });
+
+}
+
+function atualizarBasesDestino(){
+
+    const polo =
+    document.getElementById("poloDestino").value;
+
+    const select =
+    document.getElementById("baseDestino");
+
+    select.innerHTML =
+    '<option value="">Selecione</option>';
+
+    if(!BASES_POR_POLO[polo]){
+        return;
+    }
+
+    BASES_POR_POLO[polo].forEach(base => {
+
+        select.innerHTML += `
+            <option value="${base}">
+                ${base}
+            </option>
+        `;
+
+    });
 
 }
 
@@ -2011,49 +2091,79 @@ function montarTransferencia(){
     el("formCampos").innerHTML = `
 
         <div class="campo">
-            <label>Origem</label>
-            <input id="origem" placeholder="Base, polo, estoque ou responsável de origem">
+            <label>Polo Origem</label>
+
+            <select
+                id="poloOrigem"
+                onchange="atualizarBasesOrigem()">
+
+                <option value="">Selecione</option>
+                <option>JOÃO PESSOA</option>
+                <option>ITABAIANA</option>
+                <option>MAMANGUAPE</option>
+
+            </select>
         </div>
 
         <div class="campo">
-            <label>Destino</label>
-            <input id="destino" placeholder="Base, polo, estoque ou responsável de destino">
+            <label>Base Origem</label>
+
+            <select id="baseOrigem">
+
+                <option value="">
+                    Selecione
+                </option>
+
+            </select>
         </div>
 
         <div class="campo">
+            <label>Polo Destino</label>
 
-    <div class="campo campo-autocomplete">
+            <select
+                id="poloDestino"
+                onchange="atualizarBasesDestino()">
 
-        <label>Material / Equipamento</label>
+                <option value="">Selecione</option>
+                <option>JOÃO PESSOA</option>
+                <option>ITABAIANA</option>
+                <option>MAMANGUAPE</option>
 
-        <input
-            id="equipamento"
-            placeholder="Digite o nome do material..."
-            autocomplete="off"
-            oninput="buscarMaterial()">
-
-        <div
-            id="sugestoesMateriais"
-            class="sugestoes">
+            </select>
         </div>
 
-    </div>
+        <div class="campo">
+            <label>Base Destino</label>
 
-</div>
+            <select id="baseDestino">
+
+                <option value="">
+                    Selecione
+                </option>
+
+            </select>
+        </div>
+
+        <div class="campo campo-autocomplete">
+
+            <label>Material / Equipamento</label>
+
+            <input
+                id="equipamento"
+                autocomplete="off"
+                placeholder="Digite o material"
+                oninput="buscarMaterial()">
+
+            <div
+                id="sugestoesMateriais"
+                class="sugestoes">
+            </div>
+
+        </div>
 
         <div class="campo">
             <label>Quantidade</label>
-            <input id="quantidade" type="number" min="1" value="1">
-        </div>
-
-        <div class="campo">
-            <label>Regional</label>
-            <input id="regional" placeholder="Ex.: DEOP-L">
-        </div>
-
-        <div class="campo">
-            <label>Polo / Base</label>
-            <input id="polo" placeholder="Ex.: Cajazeiras">
+            <input id="quantidade" type="number" value="1">
         </div>
 
         <div class="campo">
@@ -2062,19 +2172,21 @@ function montarTransferencia(){
         </div>
 
         <div class="campo">
-            <label>Responsável pela transferência</label>
-            <input id="responsavel" placeholder="Nome do responsável">
+            <label>Responsável</label>
+            <input id="responsavel" readonly>
         </div>
 
         <div class="campo campo-full">
             <label>Observação</label>
+
             <textarea
-                id="observacao"
-                placeholder="Informe detalhes da transferência."></textarea>
+                id="observacao">
+            </textarea>
         </div>
 
     `;
 
+    preencherResponsavelLogado();
 }
 
 /* ==============================
@@ -2271,9 +2383,11 @@ function coletarDadosFormulario(){
 
         base:valor("base"),
 
-        origem:valor("origem"),
-
-        destino:valor("destino"),
+       origem:
+        `${valor("poloOrigem")} - ${valor("baseOrigem")}`,
+        
+        destino:
+        `${valor("poloDestino")} - ${valor("baseDestino")}`,
 
         estadoMaterial:valor("estadoMaterial"),
 
