@@ -3215,72 +3215,103 @@ function renderSugestoesColaboradores(lista){
 
 function selecionarColaborador(col){
 
+    const nome =
+        String(col.nome || "Colaborador")
+        .trim();
+
+    const matricula =
+        String(col.matricula || "")
+        .trim();
+
+    const polo =
+        String(col.polo || "")
+        .trim();
+
+    const base =
+        String(col.base || "")
+        .trim();
+
+    if(!polo || !base){
+
+        const desejaCorrigir =
+            confirm(
+                `⚠️ CADASTRO INCOMPLETO\n\n` +
+                `Colaborador: ${nome}\n` +
+                `Matrícula: ${matricula || "Não informada"}\n\n` +
+                `Este colaborador não possui Polo e/ou Base cadastrados.\n\n` +
+                `A alteração deve ser realizada por um administrador do sistema.\n\n` +
+                `Deseja abrir as Configurações para corrigir o cadastro agora?`
+            );
+
+        limparDadosColaborador();
+
+        const box =
+            el("sugestoesColaboradores");
+
+        if(box){
+            box.innerHTML = "";
+            box.style.display = "none";
+        }
+
+        if(desejaCorrigir){
+
+            const params =
+                new URLSearchParams();
+
+            params.set(
+                "editarMatricula",
+                matricula
+            );
+
+            params.set(
+                "origem",
+                "movimentacao"
+            );
+
+            window.location.href =
+                `https://coec-epb.github.io/Controle-EPI/?${params.toString()}`;
+
+        }
+
+        return;
+
+    }
+
     if(el("colaborador")){
-        el("colaborador").value =
-        col.nome || "";
+        el("colaborador").value = nome;
     }
 
     if(el("matricula")){
-        el("matricula").value =
-        col.matricula || "";
+        el("matricula").value = matricula;
     }
 
     if(el("regional")){
         el("regional").value =
-        col.regional || "";
+            col.regional || "";
     }
 
     if(el("polo")){
-        el("polo").value =
-        col.polo || "";
+        el("polo").value = polo;
     }
 
     if(el("base")){
-        el("base").value =
-        col.base || "";
+        el("base").value = base;
     }
-
-    // NOVA VALIDAÇÃO
-
-    if(
-    !col.polo ||
-    !col.base
-){
-
-    const editar = confirm(
-        `⚠️ ${col.nome} não possui Polo/Base cadastrados.\n\nDeseja abrir o cadastro para corrigir agora?`
-    );
-
-    if(editar){
-
-        const matricula =
-            encodeURIComponent(
-                col.matricula || ""
-            );
-
-        window.open(
-            `https://coec-epb.github.io/colaboradores_material/?matricula=${matricula}`,
-            "_blank"
-        );
-
-    }
-
-    limparDadosColaborador();
-
-    return;
-}
 
     const box =
-    el("sugestoesColaboradores");
+        el("sugestoesColaboradores");
 
     if(box){
-
         box.innerHTML = "";
-
-        box.style.display =
-        "none";
-
+        box.style.display = "none";
     }
+
+    /*
+     * Limpa o material anterior porque a consulta
+     * do estoque depende da base do colaborador.
+     */
+
+    limparMaterialSelecionado();
 
 }
 
