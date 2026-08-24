@@ -3243,18 +3243,32 @@ function selecionarColaborador(col){
     // NOVA VALIDAÇÃO
 
     if(
-        !col.polo ||
-        !col.base
-    ){
+    !col.polo ||
+    !col.base
+){
 
-        alert(
-            `O colaborador ${col.nome} não possui Polo/Base cadastrados.\n\nAtualize o cadastro dele em Colaboradores antes de realizar movimentações.`
+    const editar = confirm(
+        `⚠️ ${col.nome} não possui Polo/Base cadastrados.\n\nDeseja abrir o cadastro para corrigir agora?`
+    );
+
+    if(editar){
+
+        const matricula =
+            encodeURIComponent(
+                col.matricula || ""
+            );
+
+        window.open(
+            `https://coec-epb.github.io/colaboradores_material/?matricula=${matricula}`,
+            "_blank"
         );
 
-        limparDadosColaborador();
-
-        return;
     }
+
+    limparDadosColaborador();
+
+    return;
+}
 
     const box =
     el("sugestoesColaboradores");
