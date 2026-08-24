@@ -2458,14 +2458,7 @@ async function salvarMovimentacao(){
 
     }
 
-    if(operacaoSelecionada === "TRANSFERENCIA"){
-
-        if(!valor("origem") || !valor("destino")){
-            alert("Informe origem e destino.");
-            return;
-        }
-
-    }
+    
 
     let fotosUrls = [];
     const quantidadeSolicitada =
@@ -2664,6 +2657,27 @@ fotosUrls.push(
     }
 
 }
+
+function limparMaterialSelecionado(){
+
+    if(el("equipamento")){
+        el("equipamento").value = "";
+    }
+
+    if(el("codigoEquipamento")){
+        el("codigoEquipamento").value = "";
+    }
+
+    if(el("estoqueDisponivel")){
+        el("estoqueDisponivel").value = "0";
+    }
+
+    if(el("sugestoesMateriais")){
+        el("sugestoesMateriais").innerHTML = "";
+        el("sugestoesMateriais").style.display = "none";
+    }
+
+}    
 
 function coletarDadosFormulario(){
 
