@@ -1343,7 +1343,7 @@ let timerBuscaColaborador = null;
 
     const BASES_POR_POLO = {
 
-    "JOÃO PESSOA":[
+    "JOÃO PESSOA": [
         "CABEDELO",
         "SEDE",
         "CRUZ DO PEIXE",
@@ -1352,21 +1352,71 @@ let timerBuscaColaborador = null;
         "MANGABEIRA"
     ],
 
-    "ITABAIANA":[
+    "ITABAIANA": [
         "ITABAIANA",
         "INGÁ",
         "GURINHÉM",
-        "CAAPORÂ"
+        "APORÁ"
     ],
 
-    "MAMANGUAPE":[
+    "MAMANGUAPE": [
         "MAMANGUAPE",
         "SAPÉ",
         "BAÍA DA TRAIÇÃO",
         "MATARACA"
+    ],
+
+    "CATOLÉ DO ROCHA": [
+        "CATOLÉ DO ROCHA",
+        "SÃO BENTO"
+    ],
+
+    "ITAPORANGA": [
+        "ITAPORANGA",
+        "CONCEIÇÃO",
+        "PIANCÓ",
+        "NOVA OLINDA"
+    ],
+
+    "PATOS": [
+        "PATOS",
+        "TEIXEIRA",
+        "MALTA",
+        "SANTA LUZIA",
+        "ÁGUA BRANCA"
+    ],
+
+    "CAJAZEIRAS": [
+        "CAJAZEIRAS",
+        "UIRAÚNA",
+        "NAZAREZINHO",
+        "SÃO JOÃO DO RIO DO PEIXE",
+        "SÃO JOSÉ DE PIRANHAS"
+    ],
+
+    "POMBAL": [
+        "POMBAL",
+        "JERICÓ",
+        "COREMAS"
     ]
 
 };
+
+    const POLOS_POR_REGIONAL = {
+
+    "LESTE": [
+        "JOÃO PESSOA",
+        "ITABAIANA",
+        "MAMANGUAPE"
+    ],
+
+    "OESTE": [
+        "CATOLÉ DO ROCHA",
+        "ITAPORANGA",
+        "PATOS",
+        "CAJAZEIRAS",
+        "POMBAL"
+    ]
 
 let usuarioLogado = {};
 
@@ -2281,6 +2331,11 @@ function montarTransferencia(){
                 <option value="JOÃO PESSOA">JOÃO PESSOA</option>
                 <option value="ITABAIANA">ITABAIANA</option>
                 <option value="MAMANGUAPE">MAMANGUAPE</option>
+                <option value="PATOS">PATOS</option>
+                <option value="CAJAZEIRAS">CAJAZEIRAS</option>
+                <option value="POMBAL">POMBAL</option>
+                <option value="ITAPORANGA">ITAPORANGA</option>
+                <option value="CATOLÉ DO ROCHA">CATOLÉ DO ROCHA</option>
 
             </select>
         </div>
@@ -2308,6 +2363,11 @@ function montarTransferencia(){
                 <option value="JOÃO PESSOA">JOÃO PESSOA</option>
                 <option value="ITABAIANA">ITABAIANA</option>
                 <option value="MAMANGUAPE">MAMANGUAPE</option>
+                <option value="PATOS">PATOS</option>
+                <option value="CAJAZEIRAS">CAJAZEIRAS</option>
+                <option value="POMBAL">POMBAL</option>
+                <option value="ITAPORANGA">ITAPORANGA</option>
+                <option value="CATOLÉ DO ROCHA">CATOLÉ DO ROCHA</option>
 
             </select>
         </div>
